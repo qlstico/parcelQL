@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`route / 1`] = `
+<div
+  style={
+    Object {
+      "marginTop": 100,
+      "textAlign": "center",
+    }
+  }
+>
+  <h3>
+    <a
+      href="#start"
+      id="start"
+      onClick={[Function]}
+    >
+      Start
+    </a>
+  </h3>
+</div>
+`;
+
+exports[`route /dummy 1`] = `
+<div
+  style={
+    Object {
+      "marginTop": 100,
+      "textAlign": "center",
+    }
+  }
+>
+  <h3>
+    <a
+      href="#start"
+      id="start"
+      onClick={[Function]}
+    >
+      Start
+    </a>
+  </h3>
+</div>
+`;
+
+exports[`route /start 1`] = `
+<div
+  style={
+    Object {
+      "marginTop": 100,
+      "textAlign": "center",
+    }
+  }
+>
+  <h3>
+    <a
+      href="#start"
+      id="start"
+      onClick={[Function]}
+    >
+      Start
+    </a>
+  </h3>
+</div>
+`;
