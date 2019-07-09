@@ -3,6 +3,9 @@ const { format } = require('url');
 const { BrowserWindow, app, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
+const path = require('path');
+const url = require('url');
+const os = require('os');
 const {
   getAllDbs,
   getAllTables,
@@ -51,6 +54,7 @@ const enableDestroy = require('server-destroy');
 let mainWindow;
 let expressApp;
 let expressServer;
+let LOGGEDIN_USER = '';
 
 /* Setup express server when user clicks a db in the front end */
 function setupExpress(databaseName, username = '', password) {
