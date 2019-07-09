@@ -1,0 +1,34 @@
+/* Main CSS file */
+
+/* @import '_example/_example.css'; */
+
+.sucio {
+  max-width: 50px;
+}
+
+#breadcrumbs {
+  color: #ffffff;
+  cursor: pointer;
+}
+
+#headerLogo {
+  height: 135px;
+  width: 135px;
+  margin-top: -10px;
+  margin-bottom: -40px;
+  margin-left: -35px;
+  margin-right: -45px;
+  cursor: pointer;
+}
+
+#add_db_menu {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#menuButton {
+  margin-left: 10px;
+  margin-bottom: 15px;
+}
