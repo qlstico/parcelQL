@@ -19,11 +19,11 @@
     "test:jest": "jest",
     "lint": "tslint app/**/*.ts{,x}"
   },
-  "author": "shamofu",
+  "author": "qlStico",
   "license": "MIT",
   "build": {
-    "productName": "ElectronReactParcel",
-    "appId": "org.shamofu.ElectronReactParcel",
+    "productName": "qlStico",
+    "appId": "io.qlstico",
     "files": [
       "app/**",
       "!app/main/main.ts",

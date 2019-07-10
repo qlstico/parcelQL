@@ -4,7 +4,7 @@ import { routeNames } from './constants/routeNames';
 import {
   Create,
   AllDBs,
-  // AllTables,
+  AllTables,
   ConnectPage,
   // IndivTable,
   Edit,
@@ -18,7 +18,7 @@ class Routes extends Component {
         <Route exact path={routeNames.editDB} component={Edit} />
         <Route exact path={routeNames.create} component={Create} />
         <Route exact path={routeNames.allDBs} component={AllDBs} />
-        {/* <Route exact path={routeNames.tables} component={AllTables} /> */}
+        <Route exact path={routeNames.tables} component={AllTables} />
         {/* <Route exact path={routeNames.IndivTable} component={IndivTable} /> */}
       </Switch>
     );
