@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router';
 import { routeNames } from './constants/routeNames';
 import {
   Create,
-  // AllDBs,
+  AllDBs,
   // AllTables,
   ConnectPage,
   // IndivTable,
@@ -15,11 +15,11 @@ class Routes extends Component {
     return (
       <Switch>
         <Route exact path={routeNames.Connect} component={ConnectPage} />
-        <Route exact path={routeNames.editDB} component={Edit} />
-        {/* <Route exact path={routeNames.create} component={Create} /> */}
-        {/* <Route exact path={routeNames.allDBs} component={AllDBs} />
-        <Route exact path={routeNames.tables} component={AllTables} />
-        <Route exact path={routeNames.IndivTable} component={IndivTable} /> */}
+        {/* <Route exact path={routeNames.editDB} component={Edit} /> */}
+        <Route exact path={routeNames.create} component={Create} />
+        {/* <Route exact path={routeNames.allDBs} component={AllDBs} /> */}
+        {/* <Route exact path={routeNames.tables} component={AllTables} /> */}
+        {/* <Route exact path={routeNames.IndivTable} component={IndivTable} /> */}
       </Switch>
     );
   }

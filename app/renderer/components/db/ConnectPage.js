@@ -64,9 +64,9 @@ const ConnectPage = props => {
       connection => connection.id !== id
     );
     setUserConfigs(connectionsAfterRemove);
-    // storage.set('connectionData', connectionsAfterRemove, function(error) {
-    //   if (error) throw error;
-    // });
+    storage.set('connectionData', connectionsAfterRemove, function(error) {
+      if (error) throw error;
+    });
   };
 
   const setUserDbConnection = async userConfig => {

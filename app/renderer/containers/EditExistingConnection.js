@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { DbRelatedContext, Login } from '../components/index';
-import storage from 'electron-json-storage';
 import { withRouter } from 'react-router-dom';
 const { LOGIN_FORM_DATA } = require('../constants/ipcNames');
-const { encrypt } = require('../server/util');
-import { electron } from '../utils/electronImports';
+const { encrypt } = require('../../server/util');
+import { electron, storage } from '../utils/electronImports';
 const { ipcRenderer } = electron;
 
 const Edit = props => {
@@ -16,7 +15,7 @@ const Edit = props => {
     storage.get('connectionData', (error, data) => {
       if (error) throw error;
       const foundUser = data.find(user => user.id === selectedUser.id);
-      foundUser.password = encrypt(foundUser.password, 'decrypt');
+      // foundUser.password = encrypt(foundUser.password, 'decrypt');
       setThisUser(foundUser);
       setConnectionsArray(data);
     });
@@ -27,7 +26,7 @@ const Edit = props => {
       'connectionData',
       connectionsArray.map(user => {
         if (user.id === thisUser.id) {
-          user.password = encrypt(thisUser.password, 'encrypt');
+          // user.password = encrypt(thisUser.password, 'encrypt');
           return user;
         } else {
           return user;
@@ -50,7 +49,7 @@ const Edit = props => {
     ipcRenderer.send(LOGIN_FORM_DATA, thisUser);
     props.history.push('/');
   };
-
+  console.log({ encrypt });
   return (
     thisUser && (
       <Login

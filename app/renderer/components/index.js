@@ -24,5 +24,5 @@ export { default as PrimarySearchAppBar } from './reuse/Header';
 // } from './reuse/ToastNotifications';
 
 // // Container folder files
-// export { default as Edit } from '../containers/EditExistingConnection';
-// export { default as Create } from '../containers/CreateConnection';
+export { default as Edit } from '../containers/EditExistingConnection';
+export { default as Create } from '../containers/CreateConnection';

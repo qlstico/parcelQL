@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { electron } from '../utils/electronImports';
+import { electron, storage } from '../utils/electronImports';
 // storage
 const { ipcRenderer } = electron;
+
 const {
   LOGIN_FORM_DATA,
   GET_OS_USER,
   GET_OS_USER_REPLY,
 } = require('../constants/ipcNames');
 import { Login } from '../components/index';
-const { encrypt } = require('../server/util');
+const { encrypt } = require('../../server/util');
 
 const generateID = () => {
   return (
@@ -74,7 +75,7 @@ const Create = props => {
     ipcRenderer.send(LOGIN_FORM_DATA, values);
     props.history.push('/');
   };
-
+  console.log({ storage });
   return (
     <Login
       handleSubmit={handleSubmit}
