@@ -1,5 +1,5 @@
 // // Authentication folder files
-// export { default as Login } from './authentication/Login';
+export { default as Login } from './authentication/Login';
 
 // // DB folder files
 // export { default as ConnectPage } from './db/ConnectPage';

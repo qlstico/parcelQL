@@ -9,11 +9,10 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withRouter } from 'react-router-dom';
-// const { ipcRenderer } = window.require('electron');
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 import BreadcrumbsElem from './Breadcrumbs';
-// import logoImg from '../../assets/images/whiteLogo.png';
+import logoImg from '../../../assets/images/whiteLogo.png';
 import { Button } from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
@@ -60,7 +59,7 @@ function PrimarySearchAppBar(props) {
             disableTouchRipple
             onClick={() => props.history.push('/')}
           >
-            {/* <img id="headerLogo" src={logoImg} /> */}
+            <img id="headerLogo" src={logoImg} />
           </Button>
           <BreadcrumbsElem
             location={props.location.pathname}
