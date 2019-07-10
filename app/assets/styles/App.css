@@ -2,8 +2,10 @@
 
 /* @import '_example/_example.css'; */
 
-.sucio {
-  max-width: 50px;
+h1 {
+  font-family: helvetica;
+  font-size: 21px;
+  font-weight: 200;
 }
 
 #breadcrumbs {
