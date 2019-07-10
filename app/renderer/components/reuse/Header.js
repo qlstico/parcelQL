@@ -12,7 +12,7 @@ import { withRouter } from 'react-router-dom';
 // const { ipcRenderer } = window.require('electron');
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowForward from '@material-ui/icons/ArrowForward';
-// import BreadcrumbsElem from './Breadcrumbs';
+import BreadcrumbsElem from './Breadcrumbs';
 // import logoImg from '../../assets/images/whiteLogo.png';
 import { Button } from '@material-ui/core/';
 
@@ -62,10 +62,10 @@ function PrimarySearchAppBar(props) {
           >
             {/* <img id="headerLogo" src={logoImg} /> */}
           </Button>
-          {/* <BreadcrumbsElem
+          <BreadcrumbsElem
             location={props.location.pathname}
             history={props.history}
-          /> */}
+          />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
