@@ -13,7 +13,7 @@ import {
   DbRelatedContext,
   notifyError,
   notifyRemoved,
-  notifyAdded,
+  notifyAdded
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
@@ -22,33 +22,36 @@ const {
   UPDATE_TABLE_DATA,
   REMOVE_TABLE_ROW,
   ADD_TABLE_ROW,
-  DATABASE_ERROR,
+  DATABASE_ERROR
 } = require('../../constants/ipcNames');
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: '100%'
   },
   paper: {
     marginTop: theme.spacing(3),
     width: '100%',
     overflowX: 'auto',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   },
   table: {
-    minWidth: 650,
+    minWidth: 650
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200,
+    width: 200
   },
   selectedRow: {
-    background: 'grey',
+    background: 'grey'
   },
   editRow: {
-    background: 'yellow',
+    background: 'yellow'
   },
+  changesLogged: {
+    background: '#FFE66D'
+  }
 }));
 
 const IndivTable = () => {
@@ -151,7 +154,7 @@ const IndivTable = () => {
     await ipcRenderer.send(UPDATE_TABLE_DATA, [
       selectedTable,
       selectedDb,
-      changesMade,
+      changesMade
     ]);
     // need to use .once instead of .on because .once remove event listener
     // if you use .on, the toast error will first tons of times
@@ -167,7 +170,7 @@ const IndivTable = () => {
       ipcRenderer.send(REMOVE_TABLE_ROW, [
         selectedTable,
         selectedDb,
-        selectedRow,
+        selectedRow
       ]);
       setTableMatrix(prevMatrix =>
         prevMatrix.filter(row => row[0].id !== selectedRow)
@@ -192,11 +195,27 @@ const IndivTable = () => {
     setSelectedRow(dbEntryId);
   };
 
-  // Resets selected rows to none
-  const unSelectRow = () => {
-    setSelectedRow(false);
+  // For front-end use only to generate random temporary id to create and interact
+  // with newly user created rows on grid before submitting for creation.
+  const generateNewRowTempId = (min = 0, max = 99999) => {
+    return `temp${Math.floor(Math.random() * (max - min + 1)) + min}`;
   };
 
+  // Adding a new row to the GUI grid
+  const addRowToState = keys => {
+    const row = [];
+    const rowId = generateNewRowTempId();
+    for (let key of keys) {
+      const cell = { id: rowId, key, value: null };
+      row.push(cell);
+    }
+    setTableMatrix(prevMatrix => {
+      return prevMatrix.concat([row]);
+    });
+    console.log(changesMade);
+  };
+
+  // pseudo-loading message
   window.setTimeout(() => {
     const loadingOrEmpty = document.getElementById('load-or-empty');
     if (loadingOrEmpty) {
@@ -243,7 +262,7 @@ const IndivTable = () => {
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           width: 85, //`${Number.isInteger(value) ? 30 : 130}`
-                          display: 'block',
+                          display: 'block'
                         }}
                       >
                         <TextField
@@ -263,7 +282,14 @@ const IndivTable = () => {
                       component="th"
                       scope="row"
                       className={
-                        selectedRow === id ? classes.selectedRow : null
+                        selectedRow === id
+                          ? classes.selectedRow
+                          : changesMade.some(
+                              changes =>
+                                changes['id'] === id && changes['key'] === key
+                            )
+                          ? classes.changesLogged
+                          : null
                       }
                       // Set this row to be the selected row for 'edit mode' in
                       // the state to rerender as a textField
@@ -282,7 +308,7 @@ const IndivTable = () => {
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             width: '150px',
-                            display: 'block',
+                            display: 'block'
                           }}
                         >{`${value}...`}</span> //styling so that the cells dont display massive amounts of text by default
                       ) : (
@@ -305,18 +331,21 @@ const IndivTable = () => {
         color="inherit"
         id="menuButton"
         size="small"
+        style={changesMade.length ? { background: '#FFE66D' } : {}}
       >
         Submit
       </Button>
-      {/* <Button
+      <Button
+        edge="end"
         variant="contained"
         type="button"
+        onClick={() => addRowToState(Object.keys(selectedTableData[0]))}
         color="inherit"
-        onClick={() => console.table(tableMatrix)}
+        id="menuButton"
+        size="small"
       >
         Add Row
       </Button>
-      */}
       {selectedRow && (
         <Button
           variant="contained"

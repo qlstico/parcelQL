@@ -142,6 +142,14 @@ const AllDBs = props => {
       </div>
     </Menu>
   );
+
+  window.setTimeout(() => {
+    const loadingOrEmpty = document.getElementById('load-or-empty');
+    if (loadingOrEmpty) {
+      loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
+    }
+  }, 2500);
+
   return (
     <div>
       <h1>Databases: </h1>

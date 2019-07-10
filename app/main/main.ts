@@ -16,7 +16,7 @@ const {
   deleteTable,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase,
+  deleteDatabase
 } = require('../db/db');
 const express = require('express');
 const { postgraphile } = require('postgraphile');
@@ -45,7 +45,7 @@ const {
   SET_USER_DB_CONNECTION,
   DELETE_DATABASE,
   DELETE_DATABASE_REPLY,
-  DATABASE_ERROR,
+  DATABASE_ERROR
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 
@@ -69,7 +69,7 @@ function setupExpress(databaseName, username = '', password) {
   const pglConfig = {
     watchPg: true,
     graphiql: true,
-    enhanceGraphiql: true,
+    enhanceGraphiql: true
   };
   // console.log(database);
   // setup middleware for creating our graphql api
@@ -91,12 +91,12 @@ function setupExpress(databaseName, username = '', password) {
 
 app.on('ready', async () => {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: true,
-    },
+      nodeIntegration: true
+    }
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -110,7 +110,7 @@ app.on('ready', async () => {
   const prodPath = format({
     pathname: resolve('app/renderer/.parcel/production/index.html'),
     protocol: 'file:',
-    slashes: true,
+    slashes: true
   });
   const url = isDev ? devPath : prodPath;
 
