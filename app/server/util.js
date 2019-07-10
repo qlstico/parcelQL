@@ -28,5 +28,5 @@ function encrypt(password, task) {
 // Util exports
 module.exports = {
   closeServer,
-  encrypt,
+  encrypt
 };

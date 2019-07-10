@@ -3,7 +3,7 @@ import {
   DisplayCard,
   DbRelatedContext,
   notifyAdded,
-  notifyRemoved,
+  notifyRemoved
 } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,19 +21,19 @@ const {
   CREATE_DATABASE,
   CREATE_DATABASE_REPLY,
   DELETE_DATABASE,
-  DELETE_DATABASE_REPLY,
+  DELETE_DATABASE_REPLY
 } = require('../../constants/ipcNames');
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   control: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   highlightSelected: {
-    background: 'grey',
-  },
+    background: 'grey'
+  }
 }));
 
 const AllDBs = props => {
@@ -48,7 +48,7 @@ const AllDBs = props => {
     serverStatus,
     setServerStatus,
     allDbNames,
-    setAllDbNames,
+    setAllDbNames
   } = useContext(DbRelatedContext);
 
   // Setting up initial state values for rendering/interacting with components
@@ -142,7 +142,6 @@ const AllDBs = props => {
       </div>
     </Menu>
   );
-  console.log({ allDbNames });
   return (
     <div>
       <h1>Databases: </h1>
@@ -175,26 +174,27 @@ const AllDBs = props => {
       <Grid container className={classes.root} spacing={3}>
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
-            {allDbNames
-              ? allDbNames.map(db => (
-                  <Grid
-                    key={db}
-                    className={
-                      currentlySelected === db ? classes.highlightSelected : ''
-                    }
-                    item
-                    onClick={() => enableSelected(db)}
-                    onDoubleClick={() => selectDb(db)}
-                  >
-                    {db}
-                    <DisplayCard
-                      className={classes.control}
-                      name={db}
-                      type="db"
-                    />
-                  </Grid>
-                ))
-              : 'Loading'}
+            {allDbNames ? (
+              allDbNames.map(db => (
+                <Grid
+                  key={db}
+                  className={
+                    currentlySelected === db ? classes.highlightSelected : ''
+                  }
+                  item
+                  onClick={() => enableSelected(db)}
+                  onDoubleClick={() => selectDb(db)}
+                >
+                  <DisplayCard
+                    className={classes.control}
+                    name={db}
+                    type="db"
+                  />
+                </Grid>
+              ))
+            ) : (
+              <h1 id="load-or-empty">One second please...</h1>
+            )}
             {/* {allDbNames && allDbNames.map(db => <li>db</li>)} */}
           </Grid>
         </Grid>

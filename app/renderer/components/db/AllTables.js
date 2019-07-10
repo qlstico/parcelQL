@@ -5,7 +5,7 @@ import {
   GraphQLDisplayCard,
   VoyagerDisplayCard,
   notifyRemoved,
-  notifyAdded,
+  notifyAdded
 } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { withRouter } from 'react-router-dom';
@@ -22,19 +22,19 @@ const {
   CREATE_TABLE,
   CREATE_TABLE_REPLY,
   DELETE_TABLE,
-  DELETE_TABLE_REPLY,
+  DELETE_TABLE_REPLY
 } = require('../../constants/ipcNames');
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   control: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   highlightSelected: {
-    background: 'grey',
-  },
+    background: 'grey'
+  }
 }));
 
 const AllTables = props => {
@@ -51,7 +51,7 @@ const AllTables = props => {
     serverStatus,
     setServerStatus,
     setSelectedTable,
-    setCurrentTable,
+    setCurrentTable
   } = useContext(DbRelatedContext);
 
   // Sets and stores values provided from "add table" field
@@ -156,7 +156,6 @@ const AllTables = props => {
       loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
     }
   }, 2500);
-  console.log('inside ALLTABLES');
   return (
     <div>
       <h1>GraphQL Tools: </h1>
@@ -209,9 +208,7 @@ const AllTables = props => {
                 </Grid>
               ))
             ) : (
-              <div>
-                <h1 id="load-or-empty">One second please...</h1>
-              </div>
+              <h1 id="load-or-empty">One second please...</h1>
             )}
           </Grid>
         </Grid>
