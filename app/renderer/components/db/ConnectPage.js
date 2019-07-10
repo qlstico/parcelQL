@@ -13,23 +13,23 @@ const {
   CLOSE_SERVER,
   GET_DB_NAMES,
   GET_DB_NAMES_REPLY,
-  SET_USER_DB_CONNECTION,
+  SET_USER_DB_CONNECTION
 } = require('../../constants/ipcNames');
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   control: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   card: {
     height: 150,
-    width: 1000,
+    width: 1000
   },
   pos: {
-    marginBottom: 0,
-  },
+    marginBottom: 0
+  }
 }));
 
 const ConnectPage = props => {
@@ -40,7 +40,7 @@ const ConnectPage = props => {
     setSelectedUser,
     serverStatus,
     setServerStatus,
-    setAllDbNames,
+    setAllDbNames
   } = useContext(DbRelatedContext);
 
   const existingConnections = () => {
@@ -76,7 +76,6 @@ const ConnectPage = props => {
   const getAllDbNames = async () => {
     await ipcRenderer.send(GET_DB_NAMES);
     await ipcRenderer.on(GET_DB_NAMES_REPLY, (_, databaseNames) => {
-      console.log({ databaseNames });
       setAllDbNames(databaseNames);
     });
     props.history.push('/dbs');
@@ -86,7 +85,6 @@ const ConnectPage = props => {
     setUserDbConnection(userConfig);
     getAllDbNames();
   };
-  console.log({ storage });
   return (
     <div>
       <h1>

@@ -49,7 +49,6 @@ const Edit = props => {
     ipcRenderer.send(LOGIN_FORM_DATA, thisUser);
     props.history.push('/');
   };
-  console.log({ encrypt });
   return (
     thisUser && (
       <Login

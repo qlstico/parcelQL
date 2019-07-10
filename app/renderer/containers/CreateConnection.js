@@ -7,7 +7,7 @@ const { ipcRenderer } = electron;
 const {
   LOGIN_FORM_DATA,
   GET_OS_USER,
-  GET_OS_USER_REPLY,
+  GET_OS_USER_REPLY
 } = require('../constants/ipcNames');
 import { Login } from '../components/index';
 const { encrypt } = require('../../server/util');
@@ -27,7 +27,7 @@ const defaultConnectionSettings = {
   password: '',
   host: 'localhost',
   dbTypePassword: '',
-  databaseName: '',
+  databaseName: ''
 };
 
 const Create = props => {
@@ -75,7 +75,6 @@ const Create = props => {
     ipcRenderer.send(LOGIN_FORM_DATA, values);
     props.history.push('/');
   };
-  console.log({ storage });
   return (
     <Login
       handleSubmit={handleSubmit}
