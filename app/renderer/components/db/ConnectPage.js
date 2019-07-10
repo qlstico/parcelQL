@@ -44,10 +44,10 @@ const ConnectPage = props => {
   } = useContext(DbRelatedContext);
 
   const existingConnections = () => {
-    // storage.get('connectionData', (error, data) => {
-    //   if (error) throw error;
-    //   setUserConfigs(data);
-    // });
+    storage.get('connectionData', (error, data) => {
+      if (error) throw error;
+      setUserConfigs(data);
+    });
     return userConfigs;
   };
 
@@ -85,7 +85,7 @@ const ConnectPage = props => {
     setUserDbConnection(userConfig);
     getAllDbNames();
   };
-
+  console.log({ storage });
   return (
     <div>
       <h1>

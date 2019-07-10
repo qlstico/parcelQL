@@ -3,6 +3,6 @@
 const electron = window.require('electron');
 const fs = window.require('fs');
 const path = window.require('path');
-// const storage = window.require('electron-json-storage');
+const storage = window.require('electron-json-storage');
 
-export { electron, fs, path }; //storage
+export { electron, fs, path, storage }; //storage
