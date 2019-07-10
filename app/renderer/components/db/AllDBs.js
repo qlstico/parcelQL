@@ -48,7 +48,8 @@ const AllDBs = props => {
     serverStatus,
     setServerStatus,
     allDbNames,
-    setAllDbNames
+    setAllDbNames,
+    setCurrentComponent
   } = useContext(DbRelatedContext);
 
   // Setting up initial state values for rendering/interacting with components
@@ -61,12 +62,13 @@ const AllDBs = props => {
 
   // Hooks for setting/retrieving neccesary info to/from config file and context provider
   useEffect(() => {
+    setCurrentComponent('alldbs');
     // componentDidMount to kill the server if it is open
     if (serverStatus) {
       ipcRenderer.send(CLOSE_SERVER);
       setServerStatus(false);
     }
-  }, [serverStatus]);
+  }, [serverStatus, allDbNames]);
 
   const handleInputChange = e => {
     const { name, value } = e.target;

@@ -40,7 +40,8 @@ const ConnectPage = props => {
     setSelectedUser,
     serverStatus,
     setServerStatus,
-    setAllDbNames
+    setAllDbNames,
+    setCurrentComponent
   } = useContext(DbRelatedContext);
 
   const existingConnections = () => {
@@ -52,6 +53,7 @@ const ConnectPage = props => {
   };
 
   useEffect(() => {
+    setCurrentComponent('connect');
     existingConnections();
     if (serverStatus) {
       ipcRenderer.send(CLOSE_SERVER);

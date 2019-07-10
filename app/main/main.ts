@@ -45,7 +45,9 @@ const {
   SET_USER_DB_CONNECTION,
   DELETE_DATABASE,
   DELETE_DATABASE_REPLY,
-  DATABASE_ERROR
+  DATABASE_ERROR,
+  REFRESH,
+  REFRESH_REPLY
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 
@@ -253,4 +255,22 @@ ipcMain.on(REMOVE_TABLE_ROW, async (_, args) => {
  */
 ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
   await setUserProvidedDbConnection(userConfig);
+});
+
+ipcMain.on(REFRESH, async (event, args) => {
+  const currentComponent = args[0];
+  const refreshArgs = args[1];
+  switch (currentComponent) {
+    case 'alldbs':
+      const dbNames = await getAllDbs();
+      event.reply(REFRESH_REPLY, dbNames);
+    case 'alltables':
+      const tableNames = await getAllTables(...refreshArgs);
+      event.reply(REFRESH_REPLY, tableNames);
+    case 'indivtable':
+      const tableData = await getTableData(...refreshArgs);
+      event.reply(REFRESH_REPLY, tableData);
+    default:
+      return;
+  }
 });
