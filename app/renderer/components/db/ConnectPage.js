@@ -7,8 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import storage from 'electron-json-storage';
-import { electron } from '../../utils/electronImports';
+import { electron, storage } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
 const {
   CLOSE_SERVER,
@@ -45,10 +44,10 @@ const ConnectPage = props => {
   } = useContext(DbRelatedContext);
 
   const existingConnections = () => {
-    storage.get('connectionData', (error, data) => {
-      if (error) throw error;
-      setUserConfigs(data);
-    });
+    // storage.get('connectionData', (error, data) => {
+    //   if (error) throw error;
+    //   setUserConfigs(data);
+    // });
     return userConfigs;
   };
 
@@ -65,9 +64,9 @@ const ConnectPage = props => {
       connection => connection.id !== id
     );
     setUserConfigs(connectionsAfterRemove);
-    storage.set('connectionData', connectionsAfterRemove, function(error) {
-      if (error) throw error;
-    });
+    // storage.set('connectionData', connectionsAfterRemove, function(error) {
+    //   if (error) throw error;
+    // });
   };
 
   const setUserDbConnection = async userConfig => {

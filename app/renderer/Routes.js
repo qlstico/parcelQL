@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router';
 import { routeNames } from './constants/routeNames';
 import {
-  // Create,
+  Create,
   // AllDBs,
   // AllTables,
   ConnectPage,
   // IndivTable,
-  // Edit,
+  Edit,
 } from './components';
 
 class Routes extends Component {
