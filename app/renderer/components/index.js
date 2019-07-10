@@ -8,10 +8,7 @@ export { default as IndivTable } from './db/IndivTable';
 export { default as AllDBs } from './db/AllDBs';
 
 // // Reuse folder files
-// export { default as Button } from './reuse/Button';
-// export { default as Form } from './reuse/Form';
 export { default as Header } from './reuse/Header';
-// export { default as LayoutMain } from './reuse/LayoutMain';
 export { default as DisplayCard } from './reuse/DisplayCard';
 export { DbRelatedContext, DbRelatedProvider } from './reuse/DbRelatedContext';
 export { default as PrimarySearchAppBar } from './reuse/Header';

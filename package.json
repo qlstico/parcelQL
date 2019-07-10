@@ -1,7 +1,7 @@
 {
-  "name": "electron-react-parcel-boilerplate",
+  "name": "QLstico",
   "version": "0.7.7",
-  "description": "A boilerplate for Electron + React + Parcel.",
+  "description": "Database tool.",
   "main": "app/main/.parcel/main.js",
   "scripts": {
     "start": "run-s main:build watch",
