@@ -9,7 +9,7 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withRouter } from 'react-router-dom';
-// import { ipcRenderer } from 'electron';
+// const { ipcRenderer } = window.require('electron');
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowForward from '@material-ui/icons/ArrowForward';
 // import BreadcrumbsElem from './Breadcrumbs';
