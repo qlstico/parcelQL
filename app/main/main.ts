@@ -150,6 +150,7 @@ ipcMain.on(GET_OS_USER, event => {
 ipcMain.on(GET_DB_NAMES, async event => {
   const dbNames = await getAllDbs();
   // reply with database names from query
+  console.log({ dbNames });
   event.reply(GET_DB_NAMES_REPLY, dbNames);
 });
 

@@ -17,7 +17,7 @@ class Routes extends Component {
         <Route exact path={routeNames.Connect} component={ConnectPage} />
         <Route exact path={routeNames.editDB} component={Edit} />
         <Route exact path={routeNames.create} component={Create} />
-        {/* <Route exact path={routeNames.allDBs} component={AllDBs} /> */}
+        <Route exact path={routeNames.allDBs} component={AllDBs} />
         {/* <Route exact path={routeNames.tables} component={AllTables} /> */}
         {/* <Route exact path={routeNames.IndivTable} component={IndivTable} /> */}
       </Switch>

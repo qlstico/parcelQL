@@ -142,14 +142,7 @@ const AllDBs = props => {
       </div>
     </Menu>
   );
-
-  window.setTimeout(() => {
-    const loadingOrEmpty = document.getElementById('load-or-empty');
-    if (loadingOrEmpty) {
-      loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
-    }
-  }, 2500);
-
+  console.log({ allDbNames });
   return (
     <div>
       <h1>Databases: </h1>
@@ -164,6 +157,7 @@ const AllDBs = props => {
       >
         Add A Database
       </Button>
+
       {currentlySelected && (
         <Button
           variant="contained"
@@ -177,32 +171,31 @@ const AllDBs = props => {
           Remove Database
         </Button>
       )}
+
       <Grid container className={classes.root} spacing={3}>
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
-            {allDbNames.length ? (
-              allDbNames.map(db => (
-                <Grid
-                  key={db}
-                  className={
-                    currentlySelected === db ? classes.highlightSelected : ''
-                  }
-                  item
-                  onClick={() => enableSelected(db)}
-                  onDoubleClick={() => selectDb(db)}
-                >
-                  <DisplayCard
-                    className={classes.control}
-                    name={db}
-                    type="db"
-                  />
-                </Grid>
-              ))
-            ) : (
-              <div>
-                <h1 id="load-or-empty">One second please...</h1>
-              </div>
-            )}
+            {allDbNames
+              ? allDbNames.map(db => (
+                  <Grid
+                    key={db}
+                    className={
+                      currentlySelected === db ? classes.highlightSelected : ''
+                    }
+                    item
+                    onClick={() => enableSelected(db)}
+                    onDoubleClick={() => selectDb(db)}
+                  >
+                    {db}
+                    <DisplayCard
+                      className={classes.control}
+                      name={db}
+                      type="db"
+                    />
+                  </Grid>
+                ))
+              : 'Loading'}
+            {/* {allDbNames && allDbNames.map(db => <li>db</li>)} */}
           </Grid>
         </Grid>
       </Grid>

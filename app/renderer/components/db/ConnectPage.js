@@ -76,6 +76,7 @@ const ConnectPage = props => {
   const getAllDbNames = async () => {
     await ipcRenderer.send(GET_DB_NAMES);
     await ipcRenderer.on(GET_DB_NAMES_REPLY, (_, databaseNames) => {
+      console.log({ databaseNames });
       setAllDbNames(databaseNames);
     });
     props.history.push('/dbs');
