@@ -4,7 +4,7 @@ export { default as Login } from './authentication/Login';
 // // DB folder files
 export { default as ConnectPage } from './db/ConnectPage';
 export { default as AllTables } from './db/AllTables';
-// export { default as IndivTable } from './db/IndivTable';
+export { default as IndivTable } from './db/IndivTable';
 export { default as AllDBs } from './db/AllDBs';
 
 // // Reuse folder files

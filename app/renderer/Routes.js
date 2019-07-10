@@ -6,7 +6,7 @@ import {
   AllDBs,
   AllTables,
   ConnectPage,
-  // IndivTable,
+  IndivTable,
   Edit,
 } from './components';
 
@@ -19,7 +19,7 @@ class Routes extends Component {
         <Route exact path={routeNames.create} component={Create} />
         <Route exact path={routeNames.allDBs} component={AllDBs} />
         <Route exact path={routeNames.tables} component={AllTables} />
-        {/* <Route exact path={routeNames.IndivTable} component={IndivTable} /> */}
+        <Route exact path={routeNames.IndivTable} component={IndivTable} />
       </Switch>
     );
   }
