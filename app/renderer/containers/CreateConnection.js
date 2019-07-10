@@ -47,10 +47,10 @@ const Create = props => {
     // call to retrieve OS Username as default
     getOSUserName();
     // componentDidMount -> get connection data from ls
-    // storage.get('connectionData', (error, data) => {
-    //   if (error) throw error;
-    //   setConnectionData(data);
-    // });
+    storage.get('connectionData', (error, data) => {
+      if (error) throw error;
+      setConnectionData(data);
+    });
   }, []);
 
   const writeToLocalStorage = formData => {
@@ -58,9 +58,9 @@ const Create = props => {
     const newArray = Array.isArray(connectionData)
       ? connectionData.concat(formData)
       : [formData];
-    // storage.set('connectionData', newArray, function(error) {
-    //   if (error) throw error;
-    // });
+    storage.set('connectionData', newArray, function(error) {
+      if (error) throw error;
+    });
   };
 
   const handleInputChange = e => {
