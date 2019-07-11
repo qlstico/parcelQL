@@ -2,22 +2,23 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <p align="center">
-<img width="250" alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/60852953-00c5b980-a1c8-11e9-9c44-e5c04eff2c25.png">
+<img width="250" alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/61068926-355c8f80-a3d9-11e9-9581-c6938b151cac.png">
 </p>
 
 ---
 
-Welcome to **QLStico(beta)**: An easy-to-use desktop application that helps you visualize your databases, tables, and data in both a GUI format as well as through the power of GraphQL.
+Welcome to **QLStico(beta)**: An easy-to-use desktop application redefining Postgres database access and visualization through an intuitive UI and the power of GraphQL.
 
 ## Getting Started
 
 #### Requirements
 
-MacOS, Linux, and Unix OS' are supported - all you need is Postgres installed on your machine!
+MacOS is fully supported, Linux supported through manually compiling the package. Postgres should be installed on your machine.
 
 #### How to Install
 
 Beta Release 0.0.1
+Download available at [www.qlstico.io](https://www.qlstico.io)
 
 ## Features
 
@@ -90,6 +91,14 @@ Upon entering a table, a grid is generated comprised of all of it's contents. Yo
 Double-clicking a row sets that row into edit mode for you to modify any of the row's contents. Upon changing any item(s), you may hit submit to update your table with these changes. Any errors in updating will be reported back to you.
 
 ![Submission Error](https://user-images.githubusercontent.com/46896778/60852776-230b0780-a1c7-11e9-8618-6f80adbe7de7.png)
+
+**Navigation**
+
+Navigating between different page views is as easy as pressing any of the breadcrumb links in the Nav Bar, or pressing the back arrow to go to the immediately preceeding page.
+
+The refresh button retrieves any new information included in your databases that were created or modified outside of QLStico.
+
+![Navigation](https://user-images.githubusercontent.com/46896778/61070896-b61d8a80-a3dd-11e9-86c1-94200ab864f9.png)
 
 ## Resources
 
