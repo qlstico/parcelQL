@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <p align="center">
-<img width="250" alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/61068926-355c8f80-a3d9-11e9-9581-c6938b151cac.png">
+<img width="250" alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/61082299-31d80100-a3f7-11e9-812f-00f9916ef804.png">
 </p>
 
 ---
