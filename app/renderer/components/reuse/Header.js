@@ -3,14 +3,9 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import { withRouter } from 'react-router-dom';
-import { ArrowBack, Refresh } from '@material-ui/icons';
-import ArrowForward from '@material-ui/icons/ArrowForward';
+import ArrowBack from '@material-ui/icons/ArrowBack';
+import Refresh from '@material-ui/icons/Refresh';
 import BreadcrumbsElem from './Breadcrumbs';
 import logoImg from '../../../assets/images/whiteLogo.png';
 import { Button } from '@material-ui/core/';
@@ -21,34 +16,34 @@ const { ipcRenderer } = electron;
 
 const useStyles = makeStyles(theme => ({
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   title: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
-      display: 'block'
-    }
+      display: 'block',
+    },
   },
   inputRoot: {
-    color: '#753689'
+    color: '#753689',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: 200
-    }
+      width: 200,
+    },
   },
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
-      display: 'flex'
-    }
-  }
+      display: 'flex',
+    },
+  },
 }));
 
 function PrimarySearchAppBar(props) {
@@ -61,7 +56,7 @@ function PrimarySearchAppBar(props) {
     setSelectedTableData,
     selectedDb,
     selectedTable,
-    currentUser
+    currentUser,
   } = useContext(DbRelatedContext);
 
   const refreshPage = async () => {
@@ -78,7 +73,7 @@ function PrimarySearchAppBar(props) {
     } else if (currentComponent === 'indivtable') {
       await ipcRenderer.send(REFRESH, [
         currentComponent,
-        [selectedTable, selectedDb]
+        [selectedTable, selectedDb],
       ]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setSelectedTableData(refreshedData);
