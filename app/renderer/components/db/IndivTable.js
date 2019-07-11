@@ -60,9 +60,12 @@ const IndivTable = () => {
   const classes = useStyles();
 
   // Grabbing the tabledata from the context provider
-  const { selectedTableData, selectedDb, selectedTable } = useContext(
-    DbRelatedContext
-  );
+  const {
+    selectedTableData,
+    selectedDb,
+    selectedTable,
+    setCurrentComponent
+  } = useContext(DbRelatedContext);
 
   // Tracking which row is in 'edit mode'
   const [editRow, setEditRow] = useState(false);
@@ -85,6 +88,7 @@ const IndivTable = () => {
   // Using this as componentDidMount && componentDidUpdate b/c the provider data from
   // context does not make it in time for the initial mounting
   useEffect(() => {
+    setCurrentComponent('indivtable');
     // Creating a 2-d matrix of the selectedTableData from provider in order to
     // represent each object in the selectedTableData array as a row, and each of the
     // values in the 'row obj' as a cell

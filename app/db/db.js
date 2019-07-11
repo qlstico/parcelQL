@@ -22,25 +22,6 @@ const setUserProvidedDbConnection = userConnection => {
   DB_CONNECTION.host = host;
 };
 
-const tranformRowToSql = (id, row) => {
-  const valuesArr = [];
-  return [
-    row
-      .filter(
-        ({ key }) => key !== 'createdAt' && key !== 'updatedAt' //&& !/\w+id$/i.test(key)
-      )
-      .map(({ key, value }, idx) => {
-        // removes these two keys from the sql
-        // makes sure we are not converting ints to strings
-        valuesArr.push(value);
-        // postgresSQL is case sensitive so if we use camel case must wrap key in ""
-        return `"${key}" = $${idx + 1}`;
-      })
-      .join(', '),
-    valuesArr.concat(id),
-  ];
-};
-
 const getAllDbs = async () => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -98,7 +79,7 @@ const getAllTables = async database => {
       AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
     );
     // console.log(response);
-    return response.rows.map(({ table_name }) => table_name);
+    return response.rows.map(({ table_name: tableName }) => tableName);
   } catch (error) {
     console.log(error);
   }
@@ -119,7 +100,7 @@ const createTable = async (selectedDb, newTableName) => {
       WHERE table_type = 'BASE TABLE'
       AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
     );
-    return response.rows.map(({ table_name }) => table_name);
+    return response.rows.map(({ table_name: tableName }) => tableName);
   } catch (error) {
     console.log(error);
   }
@@ -136,7 +117,7 @@ const deleteTable = async (selectedDb, selectedTableName) => {
       WHERE table_type = 'BASE TABLE'
       AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
     );
-    return response.rows.map(({ table_name }) => table_name);
+    return response.rows.map(({ table_name: tableName }) => tableName);
   } catch (error) {
     console.log(error);
   }
