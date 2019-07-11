@@ -7,13 +7,13 @@
 
 ---
 
-Welcome to **QLStico(beta)**: An easy-to-use desktop application redefining Postgres database access and visualization through an intuitive UX and the power of GraphQL.
+Welcome to **QLStico(beta)**: An easy-to-use desktop application redefining Postgres database access and visualization through an intuitive UI and the power of GraphQL.
 
 ## Getting Started
 
 #### Requirements
 
-MacOS, Linux, and Unix OS' are supported - all you need is Postgres installed on your machine!
+MacOS is fully supported, Linux supported through manually compiling the package. Postgres should be installed on your machine.
 
 #### How to Install
 
