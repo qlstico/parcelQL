@@ -60,32 +60,18 @@ function PrimarySearchAppBar(props) {
     setTables,
     setSelectedTableData,
     selectedDb,
-    selectedTable
+    selectedTable,
+    currentUser
   } = useContext(DbRelatedContext);
-
-  // const refreshPage = async args => {
-  //   await ipcRenderer.send(REFRESH, [currentComponent, args]);
-  //   await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
-  //     if (currentComponent === 'alldbs') {
-  //       setAllDbNames(refreshedData);
-  //     } else if (currentComponent === 'alltables') {
-  //       setTables(refreshedData);
-  //     } else if (currentComponent === 'indivtable') {
-  //       setSelectedTableData(refreshedData);
-  //     } else {
-  //       console.log('Nothing to refresh!');
-  //     }
-  //   });
-  // };
 
   const refreshPage = async () => {
     if (currentComponent === 'alldbs') {
-      await ipcRenderer.send(REFRESH, [currentComponent, [null]]);
+      await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setAllDbNames(refreshedData);
       });
     } else if (currentComponent === 'alltables') {
-      await ipcRenderer.send(REFRESH, [currentComponent, [selectedDb]]);
+      await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setTables(refreshedData);
       });

@@ -41,7 +41,8 @@ const ConnectPage = props => {
     serverStatus,
     setServerStatus,
     setAllDbNames,
-    setCurrentComponent
+    setCurrentComponent,
+    setCurrentUser
   } = useContext(DbRelatedContext);
 
   const existingConnections = () => {
@@ -84,6 +85,7 @@ const ConnectPage = props => {
   };
 
   const handleConnect = userConfig => {
+    setCurrentUser(userConfig);
     setUserDbConnection(userConfig);
     getAllDbNames();
   };

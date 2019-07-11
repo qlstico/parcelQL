@@ -260,17 +260,16 @@ ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
 ipcMain.on(REFRESH, async (event, args) => {
   const currentComponent = args[0];
   const refreshArgs = args[1];
-  switch (currentComponent) {
-    case 'alldbs':
-      const dbNames = await getAllDbs();
-      event.reply(REFRESH_REPLY, dbNames);
-    case 'alltables':
-      const tableNames = await getAllTables(...refreshArgs);
-      event.reply(REFRESH_REPLY, tableNames);
-    case 'indivtable':
-      const tableData = await getTableData(...refreshArgs);
-      event.reply(REFRESH_REPLY, tableData);
-    default:
-      return;
+  if (currentComponent === 'alldbs') {
+    const dbNames = await getAllDbs();
+    event.reply(REFRESH_REPLY, dbNames);
+  } else if (currentComponent === 'alltables') {
+    const tableNames = await getAllTables(refreshArgs);
+    event.reply(REFRESH_REPLY, tableNames);
+  } else if (currentComponent === 'indivtable') {
+    const tableData = await getTableData(...refreshArgs);
+    event.reply(REFRESH_REPLY, tableData);
+  } else {
+    return;
   }
 });
