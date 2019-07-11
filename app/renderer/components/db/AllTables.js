@@ -51,7 +51,8 @@ const AllTables = props => {
     serverStatus,
     setServerStatus,
     setSelectedTable,
-    setCurrentTable
+    setCurrentTable,
+    setCurrentComponent
   } = useContext(DbRelatedContext);
 
   // Sets and stores values provided from "add table" field
@@ -145,6 +146,8 @@ const AllTables = props => {
 
   // Send provider a true value to kick on server
   useEffect(() => {
+    setCurrentComponent('alltables');
+
     setServerStatus(true);
     //listens for rerender when anything in the tables context provider changes,
     // i.e. a table is added or removed
