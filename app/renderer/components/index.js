@@ -17,8 +17,9 @@ export { default as VoyagerDisplayCard } from './reuse/VoyagerCard';
 export {
   notifyAdded,
   notifyRemoved,
-  notifyError,
+  notifyError
 } from './reuse/ToastNotifications';
+export { default as RefreshCircle } from './reuse/Refreshing';
 
 // // Container folder files
 export { default as Edit } from '../containers/EditExistingConnection';

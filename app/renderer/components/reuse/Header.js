@@ -13,37 +13,38 @@ import { DbRelatedContext } from '../index';
 const { REFRESH, REFRESH_REPLY } = require('../../constants/ipcNames');
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
+const { throttle } = require('../../../server/util');
 
 const useStyles = makeStyles(theme => ({
   grow: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2)
   },
   title: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
+      display: 'block'
+    }
   },
   inputRoot: {
-    color: '#753689',
+    color: '#753689'
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
+      width: 200
+    }
   },
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
+      display: 'flex'
+    }
+  }
 }));
 
 function PrimarySearchAppBar(props) {
@@ -57,13 +58,18 @@ function PrimarySearchAppBar(props) {
     selectedDb,
     selectedTable,
     currentUser,
+    refreshStatus,
+    setRefreshStatus
   } = useContext(DbRelatedContext);
 
   const refreshPage = async () => {
+    setRefreshStatus(true);
+    console.log(`I'm throttled!`);
     if (currentComponent === 'alldbs') {
       await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setAllDbNames(refreshedData);
+        setRefreshStatus(false);
       });
     } else if (currentComponent === 'alltables') {
       await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
@@ -73,7 +79,7 @@ function PrimarySearchAppBar(props) {
     } else if (currentComponent === 'indivtable') {
       await ipcRenderer.send(REFRESH, [
         currentComponent,
-        [selectedTable, selectedDb],
+        [selectedTable, selectedDb]
       ]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setSelectedTableData(refreshedData);
@@ -82,6 +88,8 @@ function PrimarySearchAppBar(props) {
       console.log('Nothing to refresh!');
     }
   };
+
+  const throttledRefresh = throttle(3000, refreshPage);
 
   return (
     <div className={classes.grow}>
@@ -100,7 +108,7 @@ function PrimarySearchAppBar(props) {
           />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="autorenew" onClick={() => refreshPage()}>
+            <IconButton aria-label="autorenew" onClick={throttledRefresh}>
               <Refresh style={{ color: '#FFFFFF' }} />
             </IconButton>
             <IconButton

@@ -13,6 +13,7 @@ export const DbRelatedProvider = ({ children }) => {
   const [selectedTable, setSelectedTable] = useState(null);
   const [currentComponent, setCurrentComponent] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [refreshStatus, setRefreshStatus] = useState(false);
   return (
     <DbRelatedContext.Provider
       value={{
@@ -35,7 +36,9 @@ export const DbRelatedProvider = ({ children }) => {
         currentComponent,
         setCurrentComponent,
         currentUser,
-        setCurrentUser
+        setCurrentUser,
+        refreshStatus,
+        setRefreshStatus
       }}
     >
       {children}
