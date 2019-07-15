@@ -25,6 +25,16 @@ function encrypt(password, task) {
   }
 }
 
+// const throttle = (func, limit) => {
+//   let inThrottle;
+//   return () => {
+//     if (!inThrottle) {
+//       func();
+//       inThrottle = setTimeout(() => (inThrottle = false), limit);
+//     }
+//   };
+// };
+
 const throttle = (delay, func) => {
   let lastExecutedCallTime = 0;
   return (...args) => {

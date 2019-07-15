@@ -13,7 +13,7 @@ import { DbRelatedContext } from '../index';
 const { REFRESH, REFRESH_REPLY } = require('../../constants/ipcNames');
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
-const { throttle } = require('../../../server/util');
+// const { throttle } = require('../../../server/util');
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -63,13 +63,11 @@ function PrimarySearchAppBar(props) {
   } = useContext(DbRelatedContext);
 
   const refreshPage = async () => {
-    setRefreshStatus(true);
     console.log(`I'm throttled!`);
     if (currentComponent === 'alldbs') {
       await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
       await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
         setAllDbNames(refreshedData);
-        setRefreshStatus(false);
       });
     } else if (currentComponent === 'alltables') {
       await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
@@ -89,7 +87,17 @@ function PrimarySearchAppBar(props) {
     }
   };
 
-  const throttledRefresh = throttle(3000, refreshPage);
+  const throttle = (func, limit) => {
+    return () => {
+      if (refreshStatus === false) {
+        setRefreshStatus(true);
+        func();
+        setTimeout(() => setRefreshStatus(false), limit);
+      }
+    };
+  };
+
+  const throttledRefresh = throttle(refreshPage, 3000);
 
   return (
     <div className={classes.grow}>
@@ -108,7 +116,10 @@ function PrimarySearchAppBar(props) {
           />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="autorenew" onClick={throttledRefresh}>
+            <IconButton
+              aria-label="autorenew"
+              onClick={() => throttledRefresh()}
+            >
               <Refresh style={{ color: '#FFFFFF' }} />
             </IconButton>
             <IconButton
