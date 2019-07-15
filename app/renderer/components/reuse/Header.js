@@ -66,12 +66,12 @@ function PrimarySearchAppBar(props) {
     console.log(`I'm throttled!`);
     if (currentComponent === 'alldbs') {
       await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
-      await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
+      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
         setAllDbNames(refreshedData);
       });
     } else if (currentComponent === 'alltables') {
       await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
-      await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
+      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
         setTables(refreshedData);
       });
     } else if (currentComponent === 'indivtable') {
@@ -79,7 +79,7 @@ function PrimarySearchAppBar(props) {
         currentComponent,
         [selectedTable, selectedDb]
       ]);
-      await ipcRenderer.on(REFRESH_REPLY, (event, refreshedData) => {
+      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
         setSelectedTableData(refreshedData);
       });
     } else {

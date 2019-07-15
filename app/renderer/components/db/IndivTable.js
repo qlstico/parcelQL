@@ -13,7 +13,8 @@ import {
   DbRelatedContext,
   notifyError,
   notifyRemoved,
-  notifyAdded
+  notifyAdded,
+  RefreshCircle
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
@@ -225,7 +226,7 @@ const IndivTable = () => {
     if (loadingOrEmpty) {
       loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
     }
-  }, 3500);
+  }, 3000);
 
   return tableMatrix.length ? (
     <div className={classes.root}>
@@ -365,9 +366,7 @@ const IndivTable = () => {
       )}
     </div>
   ) : (
-    <div>
-      <h1 id="load-or-empty">One second please...</h1>
-    </div>
+    <h1 id="load-or-empty">One second please...</h1>
   );
 };
 
