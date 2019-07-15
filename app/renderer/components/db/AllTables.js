@@ -74,7 +74,7 @@ const AllTables = props => {
     setSelectedTable(table);
     setCurrentTable(table);
     await ipcRenderer.send(GET_TABLE_CONTENTS, [table, selectedDb]);
-    await ipcRenderer.on(GET_TABLE_CONTENTS_REPLY, (event, tableData) => {
+    await ipcRenderer.once(GET_TABLE_CONTENTS_REPLY, (event, tableData) => {
       setSelectedTableData(tableData);
     });
     props.history.push('/single');
@@ -84,7 +84,7 @@ const AllTables = props => {
   const createNewTable = async (currentDb, newTableName) => {
     if (newTableName) {
       await ipcRenderer.send(CREATE_TABLE, [currentDb, newTableName]);
-      await ipcRenderer.on(CREATE_TABLE_REPLY, (event, updatedTables) => {
+      await ipcRenderer.once(CREATE_TABLE_REPLY, (event, updatedTables) => {
         setTablesContext(updatedTables);
       });
       notifyAdded(currentDb, newTableName);
@@ -95,7 +95,7 @@ const AllTables = props => {
   const deleteTable = async (currentDb, selectedTableName) => {
     if (selectedTableName) {
       await ipcRenderer.send(DELETE_TABLE, [currentDb, selectedTableName]);
-      await ipcRenderer.on(DELETE_TABLE_REPLY, (event, updatedTables) => {
+      await ipcRenderer.once(DELETE_TABLE_REPLY, (event, updatedTables) => {
         setTablesContext(updatedTables);
       });
       setCurrentlySelected(false);

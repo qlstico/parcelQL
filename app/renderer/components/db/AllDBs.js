@@ -3,7 +3,8 @@ import {
   DisplayCard,
   DbRelatedContext,
   notifyAdded,
-  notifyRemoved
+  notifyRemoved,
+  RefreshCircle
 } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -77,7 +78,7 @@ const AllDBs = props => {
 
   const createNewDatabase = async newDbName => {
     await ipcRenderer.send(CREATE_DATABASE, newDbName);
-    await ipcRenderer.on(CREATE_DATABASE_REPLY, (event, updatedDatabases) => {
+    await ipcRenderer.once(CREATE_DATABASE_REPLY, (event, updatedDatabases) => {
       setAllDbNames(updatedDatabases);
     });
     notifyAdded('your PG databses', newDbName);
@@ -88,7 +89,7 @@ const AllDBs = props => {
     setSelectedDb(dbname); // set db name in context
 
     await ipcRenderer.send(GET_TABLE_NAMES, dbname); // message to get all table names
-    await ipcRenderer.on(GET_TABLE_NAMES_REPLY, (_, tableNames) => {
+    await ipcRenderer.once(GET_TABLE_NAMES_REPLY, (_, tableNames) => {
       setTablesContext(tableNames);
     });
     props.history.push('/tables'); // finally push onto the next component
@@ -97,9 +98,12 @@ const AllDBs = props => {
   const deleteDb = async selectedDbName => {
     if (selectedDbName) {
       await ipcRenderer.send(DELETE_DATABASE, selectedDbName);
-      await ipcRenderer.on(DELETE_DATABASE_REPLY, (event, updatedDatabases) => {
-        setAllDbNames(updatedDatabases);
-      });
+      await ipcRenderer.once(
+        DELETE_DATABASE_REPLY,
+        (event, updatedDatabases) => {
+          setAllDbNames(updatedDatabases);
+        }
+      );
       setCurrentlySelected(false);
       notifyRemoved('your PG databases', selectedDbName);
     }
