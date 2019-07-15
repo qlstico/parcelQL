@@ -63,7 +63,6 @@ function PrimarySearchAppBar(props) {
   } = useContext(DbRelatedContext);
 
   const refreshPage = async () => {
-    console.log(`I'm throttled!`);
     if (currentComponent === 'alldbs') {
       await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
       await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
@@ -83,7 +82,7 @@ function PrimarySearchAppBar(props) {
         setSelectedTableData(refreshedData);
       });
     } else {
-      console.log('Nothing to refresh!');
+      return;
     }
   };
 
