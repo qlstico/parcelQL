@@ -13,7 +13,6 @@ import { DbRelatedContext } from '../index';
 const { REFRESH, REFRESH_REPLY } = require('../../constants/ipcNames');
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
-// const { throttle } = require('../../../server/util');
 
 const useStyles = makeStyles(theme => ({
   grow: {
