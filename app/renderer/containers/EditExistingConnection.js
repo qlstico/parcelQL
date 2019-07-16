@@ -15,7 +15,7 @@ const Edit = props => {
     storage.get('connectionData', (error, data) => {
       if (error) throw error;
       const foundUser = data.find(user => user.id === selectedUser.id);
-      // foundUser.password = encrypt(foundUser.password, 'decrypt');
+      foundUser.password = encrypt(foundUser.password, 'decrypt');
       setThisUser(foundUser);
       setConnectionsArray(data);
     });
@@ -26,7 +26,7 @@ const Edit = props => {
       'connectionData',
       connectionsArray.map(user => {
         if (user.id === thisUser.id) {
-          // user.password = encrypt(thisUser.password, 'encrypt');
+          user.password = encrypt(thisUser.password, 'encrypt');
           return user;
         } else {
           return user;

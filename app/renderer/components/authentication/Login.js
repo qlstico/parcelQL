@@ -42,7 +42,7 @@ const Login = ({ handleSubmit, handleInputChange, values }) => {
         />
         <TextField
           label="Password"
-          type="password"
+          type="text"
           name="password"
           className={classes.textField}
           value={values.password}
