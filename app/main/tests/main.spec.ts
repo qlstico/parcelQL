@@ -19,6 +19,5 @@ test('application title', async () => {
 
 test('Header/PrimarySearchAppBar', async () => {
   const text = await app.client.getText('h1');
-  console.log(text);
   expect(text.slice(0, 8)).toBe(`Connect:`);
 });
