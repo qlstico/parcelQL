@@ -16,3 +16,8 @@ beforeEach(async () => {
 test('application title', async () => {
   expect(await app.client.getTitle()).toBe('QLStico');
 });
+
+test('Header/PrimarySearchAppBar', async () => {
+  const text = await app.client.getText('h1');
+  expect(text.slice(0, 8)).toBe(`Connect:`);
+});
