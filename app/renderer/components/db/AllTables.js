@@ -7,11 +7,16 @@ import {
   notifyRemoved,
   notifyAdded
 } from '../index';
+const path = require('path');
 import Grid from '@material-ui/core/Grid';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
+const nativeImage = electron.remote.nativeImage;
+const { dialog } = electron.remote;
+const iconPath = path.join('app/assets/images/table-icon.png');
+const tableIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import Menu from '@material-ui/core/Menu';
 import AddIcon from '@material-ui/icons/Add';
@@ -109,6 +114,18 @@ const AllTables = props => {
     notifyRemoved(currentDb, selectedTableName);
   };
 
+  // Options object for the confirmation box
+  const deleteConfirmOptions = {
+    type: 'question',
+    buttons: ['Yes, I do', 'Cancel'],
+    defaultId: 1,
+    title: 'Confirm Deletion',
+    message: `Are you sure you want to delete this table: "${currentlySelected}" ?`,
+    detail:
+      'This is a permant deletion option, all information contained will be lost.',
+    icon: tableIcon
+  };
+
   // Handles components for pop-out 'add table' component
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuId = 'primary-search-account-menu';
@@ -194,7 +211,14 @@ const AllTables = props => {
           text="white"
           size="small"
           style={{ background: '#FF715B' }}
-          onClick={() => deleteTable(selectedDb, currentlySelected)}
+          // onClick={() => deleteTable(selectedDb, currentlySelected)}
+          onClick={() =>
+            dialog.showMessageBox(null, deleteConfirmOptions, response => {
+              if (response === 0) {
+                deleteTable(selectedDb, currentlySelected);
+              }
+            })
+          }
           id="menuButton"
         >
           Remove Table

@@ -9,7 +9,12 @@ import {
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { electron } from '../../utils/electronImports';
+const path = require('path');
 const { ipcRenderer } = electron;
+const nativeImage = electron.remote.nativeImage;
+const { dialog } = electron.remote;
+const iconPath = path.join('app/assets/images/db-icon.png');
+const dbIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
@@ -21,8 +26,7 @@ const {
   CLOSE_SERVER,
   CREATE_DATABASE,
   CREATE_DATABASE_REPLY,
-  DELETE_DATABASE,
-  DELETE_DATABASE_REPLY
+  DELETE_DATABASE
 } = require('../../constants/ipcNames');
 
 // For styling MaterialUI components
@@ -39,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AllDBs = props => {
+  console.log(iconPath);
   // For styling:
   const classes = useStyles();
   const [spacing] = useState(2);
@@ -106,6 +111,18 @@ const AllDBs = props => {
       setCurrentlySelected(false);
       notifyRemoved('your PG databases', selectedDbName);
     }
+  };
+
+  // Options object for the confirmation box
+  const deleteConfirmOptions = {
+    type: 'question',
+    buttons: ['Yes, I do', 'Cancel'],
+    defaultId: 1,
+    title: 'Confirm Deletion',
+    message: `Are you sure you want to delete this database: "${currentlySelected}" ?`,
+    detail:
+      'This is a permant deletion option, all information contained will be lost.',
+    icon: dbIcon
   };
 
   // Below code responsible for MaterialUI component that handles input for creating a
@@ -181,7 +198,14 @@ const AllDBs = props => {
           text="white"
           size="small"
           style={{ background: '#FF715B' }}
-          onClick={() => deleteDb(currentlySelected)}
+          // onClick={() => deleteDb(currentlySelected)}
+          onClick={() =>
+            dialog.showMessageBox(null, deleteConfirmOptions, response => {
+              if (response === 0) {
+                deleteDb(currentlySelected);
+              }
+            })
+          }
           id="menuButton"
         >
           Remove Database
