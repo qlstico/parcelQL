@@ -160,7 +160,7 @@ ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
  */
 ipcMain.on(GET_DB_NAMES, async event => {
   const dbNames = await getAllDbs();
-  // reply with database names from query
+  // reply with database names from query, or the error message
   event.reply(GET_DB_NAMES_REPLY, dbNames);
 });
 

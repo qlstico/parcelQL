@@ -6,7 +6,7 @@ export const notifyRemoved = (parent, deletedItem) =>
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
-    draggable: true,
+    draggable: true
   });
 
 export const notifyAdded = (parent, addedItem) =>
@@ -16,18 +16,19 @@ export const notifyAdded = (parent, addedItem) =>
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
-    draggable: true,
+    draggable: true
   });
 
 export const notifyError = errorMessage =>
   toast.error(
-    `😭😭Oh no! We've encountered the following error: "${errorMessage}"`,
+    `😭😭Oh no! Looks like something went wrong!  
+     >>>ERROR : ${errorMessage} <<<`,
     {
       position: 'top-center',
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
-      draggable: true,
+      draggable: true
     }
   );

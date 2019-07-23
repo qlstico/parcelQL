@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { electron, storage } from '../utils/electronImports';
 const { ipcRenderer } = electron;
 const { GET_OS_USER, GET_OS_USER_REPLY } = require('../constants/ipcNames');
-import { Login } from '../components/index';
+import { Login, notifyAdded } from '../components/index';
 const { encrypt } = require('../../server/util');
 
 const generateID = () => {
@@ -60,6 +60,7 @@ const Create = props => {
       : [formData];
     storage.set('connectionData', newArray, function(error) {
       if (error) throw error;
+      else notifyAdded('saved Connections', `${formData.user}`);
     });
   };
 
