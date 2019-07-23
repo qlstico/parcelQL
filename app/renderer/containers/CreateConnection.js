@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { electron, storage } from '../utils/electronImports';
-// storage
 const { ipcRenderer } = electron;
-
-const {
-  LOGIN_FORM_DATA,
-  GET_OS_USER,
-  GET_OS_USER_REPLY
-} = require('../constants/ipcNames');
+const { GET_OS_USER, GET_OS_USER_REPLY } = require('../constants/ipcNames');
 import { Login } from '../components/index';
 const { encrypt } = require('../../server/util');
 
@@ -72,7 +66,6 @@ const Create = props => {
     e.preventDefault();
     values.password = encrypt(values.password, 'encrypt');
     writeToLocalStorage(values);
-    ipcRenderer.send(LOGIN_FORM_DATA, values);
     props.history.push('/');
   };
   return (

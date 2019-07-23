@@ -14,7 +14,7 @@ import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
 import AddIcon from '@material-ui/icons/Add';
-
+// For all ipcRenderer funcs
 const {
   GET_TABLE_NAMES,
   GET_TABLE_NAMES_REPLY,
@@ -25,6 +25,7 @@ const {
   DELETE_DATABASE_REPLY
 } = require('../../constants/ipcNames');
 
+// For styling MaterialUI components
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
@@ -71,11 +72,13 @@ const AllDBs = props => {
     }
   }, [serverStatus, allDbNames]);
 
+  // Handles input for new DB name from create new DB pop out form
   const handleInputChange = e => {
     const { name, value } = e.target;
     setDbToAdd(value);
   };
 
+  // Function for adding a new DB
   const createNewDatabase = async newDbName => {
     await ipcRenderer.send(CREATE_DATABASE, newDbName);
     await ipcRenderer.once(CREATE_DATABASE_REPLY, (event, updatedDatabases) => {
@@ -95,6 +98,7 @@ const AllDBs = props => {
     props.history.push('/tables'); // finally push onto the next component
   };
 
+  // Fucntion for deleting the currently selected DB
   const deleteDb = async selectedDbName => {
     if (selectedDbName) {
       await ipcRenderer.send(DELETE_DATABASE, selectedDbName);
@@ -109,6 +113,8 @@ const AllDBs = props => {
     }
   };
 
+  // Below code responsible for MaterialUI component that handles input for creating a
+  // new DB.
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuId = 'primary-search-account-menu';
   const isMenuOpen = Boolean(anchorEl);
@@ -149,6 +155,8 @@ const AllDBs = props => {
     </Menu>
   );
 
+  // Allows a pseudo loading message for a predetermined amount of time to allow
+  // the app some time to retrieve larger data sets in case it doesn't do so immediately
   window.setTimeout(() => {
     const loadingOrEmpty = document.getElementById('load-or-empty');
     if (loadingOrEmpty) {
@@ -209,7 +217,6 @@ const AllDBs = props => {
             ) : (
               <h1 id="load-or-empty">One second please...</h1>
             )}
-            {/* {allDbNames && allDbNames.map(db => <li>db</li>)} */}
           </Grid>
         </Grid>
       </Grid>

@@ -16,6 +16,7 @@ import { Button, TextField } from '@material-ui/core/';
 import Menu from '@material-ui/core/Menu';
 import AddIcon from '@material-ui/icons/Add';
 
+// For all ipcRenderer funcs
 const {
   GET_TABLE_CONTENTS,
   GET_TABLE_CONTENTS_REPLY,
@@ -25,6 +26,7 @@ const {
   DELETE_TABLE_REPLY
 } = require('../../constants/ipcNames');
 
+// For styling MaterialUI components
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
@@ -32,6 +34,7 @@ const useStyles = makeStyles(theme => ({
   control: {
     padding: theme.spacing(2)
   },
+  // This is how selected rows get their grey color set by assinging this as classname
   highlightSelected: {
     background: 'grey'
   }
@@ -48,7 +51,6 @@ const AllTables = props => {
     setTables: setTablesContext,
     selectedDb,
     setSelectedTableData,
-    serverStatus,
     setServerStatus,
     setSelectedTable,
     setCurrentTable,
@@ -70,8 +72,12 @@ const AllTables = props => {
 
   // Retrieves the tables data from the double clicked table icon
   const getTableContents = async table => {
+    // Clears table data in case it takes a minute to retrieve new data and previously
+    // selected table data is still in the provider, causing old data to render temporariliy
     setSelectedTableData([]);
+    // For provider to know what table to execute backend functions on
     setSelectedTable(table);
+    // For breadcrumbs to access current table name
     setCurrentTable(table);
     await ipcRenderer.send(GET_TABLE_CONTENTS, [table, selectedDb]);
     await ipcRenderer.once(GET_TABLE_CONTENTS_REPLY, (event, tableData) => {
@@ -103,6 +109,7 @@ const AllTables = props => {
     notifyRemoved(currentDb, selectedTableName);
   };
 
+  // Handles components for pop-out 'add table' component
   const [anchorEl, setAnchorEl] = React.useState(null);
   const menuId = 'primary-search-account-menu';
   const isMenuOpen = Boolean(anchorEl);
@@ -153,12 +160,16 @@ const AllTables = props => {
     // i.e. a table is added or removed
   }, [tablesContext]);
 
+  // Allows a pseudo loading message for a predetermined amount of time to allow
+  // the app some time to retrieve larger data sets in case it doesn't do so immediately
+  // before deciding there is nothing to display
   window.setTimeout(() => {
     const loadingOrEmpty = document.getElementById('load-or-empty');
     if (loadingOrEmpty) {
       loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
     }
   }, 2500);
+
   return (
     <div>
       <h1>GraphQL Tools: </h1>
