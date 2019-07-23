@@ -101,9 +101,9 @@ const AllTables = props => {
   const deleteTable = async (currentDb, selectedTableName) => {
     if (selectedTableName) {
       await ipcRenderer.send(DELETE_TABLE, [currentDb, selectedTableName]);
-      await ipcRenderer.once(DELETE_TABLE_REPLY, (event, updatedTables) => {
-        setTablesContext(updatedTables);
-      });
+      setTablesContext(prevTables =>
+        prevTables.filter(table => table !== selectedTableName)
+      );
       setCurrentlySelected(false);
     }
     notifyRemoved(currentDb, selectedTableName);

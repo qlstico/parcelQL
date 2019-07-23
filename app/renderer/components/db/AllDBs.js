@@ -102,12 +102,7 @@ const AllDBs = props => {
   const deleteDb = async selectedDbName => {
     if (selectedDbName) {
       await ipcRenderer.send(DELETE_DATABASE, selectedDbName);
-      await ipcRenderer.once(
-        DELETE_DATABASE_REPLY,
-        (event, updatedDatabases) => {
-          setAllDbNames(updatedDatabases);
-        }
-      );
+      setAllDbNames(prevDbs => prevDbs.filter(db => db !== selectedDbName));
       setCurrentlySelected(false);
       notifyRemoved('your PG databases', selectedDbName);
     }

@@ -227,8 +227,7 @@ ipcMain.on(CREATE_TABLE, async (event, args) => {
  */
 // args === [selectedDb, selectedTableName]
 ipcMain.on(DELETE_TABLE, async (event, args) => {
-  const tablesAfterDeletion = await deleteTable(...args);
-  event.reply(DELETE_TABLE_REPLY, tablesAfterDeletion);
+  await deleteTable(...args);
 });
 
 //======================== I N D I V  T A B L E ===============================//
