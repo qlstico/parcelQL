@@ -24,7 +24,8 @@ const Edit = props => {
       'connectionData',
       connectionsArray.map(user => {
         if (user.id === thisUser.id) {
-          user.password = encrypt(thisUser.password, 'encrypt');
+          user = thisUser;
+          user.password = encrypt(user.password, 'encrypt');
           return user;
         } else {
           return user;
