@@ -12,7 +12,7 @@ export default function RefreshCircle() {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className="load-or-refresh">
       <CircularProgress className={classes.progress} color="secondary" />
     </div>
   );
