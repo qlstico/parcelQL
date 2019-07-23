@@ -25,8 +25,12 @@ const defaultConnectionSettings = {
 };
 
 const Create = props => {
+  // Generate a random id and attach to default settings object
   defaultConnectionSettings.id = generateID();
-  const [values, setValues] = useState(defaultConnectionSettings);
+
+  // State to hold the new config settings
+  const [newConfig, setNewConfig] = useState(null);
+  // Stateful representation of file containing all saved users
   const [connectionData, setConnectionData] = useState(null);
 
   // Async function to retrieve OS Username as default create connection username
@@ -40,6 +44,8 @@ const Create = props => {
   useEffect(() => {
     // call to retrieve OS Username as default
     getOSUserName();
+    //setting the default obj defined as the state for the form values
+    setNewConfig(defaultConnectionSettings);
     // componentDidMount -> get connection data from ls
     storage.get('connectionData', (error, data) => {
       if (error) throw error;
@@ -59,21 +65,23 @@ const Create = props => {
 
   const handleInputChange = e => {
     const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+    setNewConfig({ ...newConfig, [name]: value });
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    values.password = encrypt(values.password, 'encrypt');
-    writeToLocalStorage(values);
+    newConfig.password = encrypt(newConfig.password, 'encrypt');
+    writeToLocalStorage(newConfig);
     props.history.push('/');
   };
   return (
-    <Login
-      handleSubmit={handleSubmit}
-      handleInputChange={handleInputChange}
-      values={values}
-    />
+    newConfig && (
+      <Login
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+        values={newConfig}
+      />
+    )
   );
 };
 
