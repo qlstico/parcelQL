@@ -13,7 +13,7 @@ toast.configure();
 const App = () => {
   const { refreshStatus } = useContext(DbRelatedContext);
   return (
-    <div>
+    <div className={refreshStatus ? 'loading' : ''}>
       <PrimarySearchAppBar />
       {refreshStatus ? <RefreshCircle /> : <Routes />}
     </div>

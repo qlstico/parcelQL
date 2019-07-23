@@ -8,6 +8,11 @@ h1 {
   font-weight: 200;
 }
 
+.loading {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
 #breadcrumbs {
   color: #ffffff;
   cursor: pointer;
