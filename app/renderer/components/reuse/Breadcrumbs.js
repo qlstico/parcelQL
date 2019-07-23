@@ -12,12 +12,12 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
+      width: 'auto'
+    }
   },
   paper: {
-    padding: theme.spacing(1, 2),
-  },
+    padding: theme.spacing(1, 2)
+  }
 }));
 
 const BreadcrumbsElem = props => {
@@ -32,7 +32,30 @@ const BreadcrumbsElem = props => {
             Connect
           </Link>
         </Button>
-        {props.location !== '/' ? (
+        {props.location === '/edit' ? (
+          <Button>
+            <Link id="breadcrumbs" onClick={() => props.history.push('/edit')}>
+              Edit Connection
+            </Link>
+          </Button>
+        ) : (
+          ''
+        )}
+        {props.location === '/create' ? (
+          <Button>
+            <Link
+              id="breadcrumbs"
+              onClick={() => props.history.push('/create')}
+            >
+              Create Connection
+            </Link>
+          </Button>
+        ) : (
+          ''
+        )}
+        {props.location !== '/' &&
+        props.location !== '/edit' &&
+        props.location !== '/create' ? (
           <Button>
             <Link id="breadcrumbs" onClick={() => props.history.push('/dbs')}>
               Databases
@@ -64,7 +87,7 @@ const BreadcrumbsElem = props => {
               </Link>
             </Button>
             {'  /  '}
-            <Button size="small">
+            <Button>
               <Link
                 id="breadcrumbs"
                 onClick={() => props.history.push('/single')}

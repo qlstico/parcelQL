@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { DbRelatedContext } from '../index';
+import { DbRelatedContext, notifyError, notifyRemoved } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -33,8 +33,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ConnectPage = props => {
-  const [spacing] = useState(2);
+  // State for user configuration
   const [userConfigs, setUserConfigs] = useState(null);
+  // Error State
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [spacing] = useState(2);
   const classes = useStyles();
   const {
     setSelectedUser,
@@ -62,7 +66,7 @@ const ConnectPage = props => {
     }
   }, [serverStatus]);
 
-  const removeConnection = id => {
+  const removeConnection = (id, user) => {
     const connectionsAfterRemove = userConfigs.filter(
       connection => connection.id !== id
     );
@@ -70,6 +74,7 @@ const ConnectPage = props => {
     storage.set('connectionData', connectionsAfterRemove, function(error) {
       if (error) throw error;
     });
+    notifyRemoved('saved Connections', `${user}`);
   };
 
   const setUserDbConnection = async userConfig => {
@@ -78,10 +83,22 @@ const ConnectPage = props => {
 
   const getAllDbNames = async () => {
     await ipcRenderer.send(GET_DB_NAMES);
-    await ipcRenderer.on(GET_DB_NAMES_REPLY, (_, databaseNames) => {
-      setAllDbNames(databaseNames);
+    await ipcRenderer.once(GET_DB_NAMES_REPLY, (_, dbResponse) => {
+      // checks to see if response is a string b/c we expect an array and a string
+      // means we've instead returned the error message from the back end
+      if (typeof dbResponse === 'string') {
+        if (errorMessage !== dbResponse) {
+          // notify user of the error that occured in trying to connect, and do not
+          // allow to next page
+          notifyError(dbResponse);
+        }
+      } else {
+        // on successful connection and db names response, set provider state with
+        // these db names and allow to move forward to next component.
+        setAllDbNames(dbResponse);
+        props.history.push('/dbs');
+      }
     });
-    props.history.push('/dbs');
   };
 
   const handleConnect = userConfig => {
@@ -138,7 +155,9 @@ const ConnectPage = props => {
                       Edit
                     </Button>
                     <Button
-                      onClick={() => removeConnection(connection.id)}
+                      onClick={() =>
+                        removeConnection(connection.id, connection.user)
+                      }
                       size="large"
                     >
                       Remove

@@ -366,7 +366,9 @@ const IndivTable = () => {
       )}
     </div>
   ) : (
-    <h1 id="load-or-empty">One second please...</h1>
+    <h1 id="load-or-empty" className="load-or-refresh">
+      One second please...
+    </h1>
   );
 };
 

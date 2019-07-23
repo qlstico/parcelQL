@@ -1,5 +1,5 @@
 const { format } = require('url');
-
+const { encrypt } = require('../server/util');
 const { BrowserWindow, app, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
@@ -23,7 +23,6 @@ const { postgraphile } = require('postgraphile');
 const { express: voyagerMiddleware } = require('graphql-voyager/middleware');
 const { closeServer } = require('../server/util');
 const {
-  LOGIN_FORM_DATA,
   GET_DB_NAMES,
   GET_DB_NAMES_REPLY,
   GET_TABLE_NAMES,
@@ -56,24 +55,28 @@ const enableDestroy = require('server-destroy');
 let mainWindow;
 let expressApp;
 let expressServer;
-let LOGGEDIN_USER = '';
+let LOGGEDIN_USER_CONFIG = { user: '', password: '', host: 'localhost' };
 
+// !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
 /* Setup express server when user clicks a db in the front end */
-function setupExpress(databaseName, username = '', password) {
+function setupExpress(databaseName, loggedInUser) {
+  // destructure necessary fields from user object to establish pg server connection
+  const { user, password, host } = loggedInUser;
+
   /* Major key is just overwriting existing express app.
   This was the solution */
   expressApp = express();
   // config to connect middleware to database
   const schemaName = 'public';
-  const database = `postgres://${username}:${
-    password ? `${password}` : ''
-  }@localhost:5432/${databaseName}`;
+  const database = `postgres://${user}:${encrypt(
+    password,
+    'decrypt'
+  )}@${host}:5432/${databaseName}`;
   const pglConfig = {
     watchPg: true,
     graphiql: true,
     enhanceGraphiql: true
   };
-  // console.log(database);
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(database, schemaName, pglConfig));
   // route for visualizer - access via http://localhost:5000/voyager
@@ -82,7 +85,6 @@ function setupExpress(databaseName, username = '', password) {
   // assign global var our express server so we can close it later
   expressServer = expressApp.listen(5000, function() {
     console.log('Listening :)');
-    // expressServer.close()
   });
 
   // enhance with a 'destroy' function
@@ -91,6 +93,7 @@ function setupExpress(databaseName, username = '', password) {
   // expressApp.listen(5000);
 }
 
+// !!!!!>>>>>>>>>>>>>>>>>>> ELECTRON FUNCTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
 app.on('ready', async () => {
   const mainWindow = new BrowserWindow({
     width: 1024,
@@ -122,39 +125,46 @@ app.on('ready', async () => {
 
 app.on('window-all-closed', app.quit);
 
-/*
- * ipcMain
+/* !!!!!>>>>>>>>>>>>>>>>>>> ipcMain FUNCTIONS <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
  * allows us to safely listen for and send communications to front end
  */
 
+//================= C R E A T E  C O N N E C T I O N ========================//
 /*
- * called from below components to send connection data from connection forms
- * ./containers/EditExistingConnection.js
- * ./containers/CreateConnection.js
+ * called from ./containers/CreateConnection.js in order to prepopulate the
+ * user field with the current OS user's name to help standardize an easy local
+ * connection
  */
-ipcMain.on(LOGIN_FORM_DATA, (_, formData) => {
-  // console.log('arg in login-form-data', arg); // prints values from form
-  const { user } = formData; // take value from form
-  // added to global var so we can use for db connection
-  LOGGEDIN_USER = user;
-});
-
 ipcMain.on(GET_OS_USER, event => {
   const { username } = os.userInfo();
   event.reply(GET_OS_USER_REPLY, username);
 });
 
+//==================== C O N N E C T I O N S  P A G E ===========================//
+/**Responsible for logging in a user.
+ * called from ./components/db/ConnectPage.js
+ * when the user submits request for login with a specific connection tile
+ */
+ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
+  // Setting to local global config var in order to have access to it for spinning
+  // up GraphQL server, especially for non-localhost connections, if/when user finally clicks into
+  // a DB table.
+  LOGGEDIN_USER_CONFIG = userConfig;
+  // Passes in user config to immediately facilitate pg client connection
+  await setUserProvidedDbConnection(userConfig);
+});
+
 /**
- * called from ./components/reuse/Header.js
- * when user clicks refresh icon, header sends message to trigger
- * call to get all the db names and replies with the database names
+ * called from ./components/db/ConnectPage.js
+ * called to get all the db names and replies with the database names
  */
 ipcMain.on(GET_DB_NAMES, async event => {
   const dbNames = await getAllDbs();
-  // reply with database names from query
+  // reply with database names from query, or the error message
   event.reply(GET_DB_NAMES_REPLY, dbNames);
 });
 
+//======================== A L L  D A T A B A S E S ===========================//
 /**
  * called from ./components/db/AllDBs.js
  * when user clicks database, sends message to trigger creating a db
@@ -183,12 +193,13 @@ ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
  * call to get all the table names and replies with the tableNames
  */
 ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
-  // when it's not just us testing, we should pass in LOGGEDIN_USER
-  setupExpress(dbname);
+  // KICKS ON EXPRESS SERVER TO SERVICE GRAPHQL REQUESTS
+  setupExpress(dbname, LOGGEDIN_USER_CONFIG);
   const tableNames = await getAllTables(dbname);
   event.reply(GET_TABLE_NAMES_REPLY, tableNames);
 });
 
+//======================== A L L  T A B L E S ===============================//
 /**
  * called from ./components/db/AllTables.js
  * when user clicks specific table, we recieve call
@@ -198,26 +209,6 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
   // args === (table, selectedDb)
   const tableData = await getTableData(...args);
   event.reply(GET_TABLE_CONTENTS_REPLY, tableData);
-});
-
-/**
- * called from ./components/reuse/Header.js
- * when user qlStico icon, header sends message to trigger stopping the server
- * from rec new connections
- * call to get all the db names and replies with the database names
- */
-ipcMain.on(CLOSE_SERVER, async (event, args) => {
-  closeServer(expressServer, 'closeserver*****');
-});
-
-/**
- * called from ./components/db/IndivTable.js
- * when the user submits the changes to the table
- */
-// args === [selectedTable,selectedDb,tableMatrix]
-ipcMain.on(UPDATE_TABLE_DATA, async (event, args) => {
-  const response = await updateTableData(...args);
-  typeof response === 'string' && event.reply(DATABASE_ERROR, response);
 });
 
 /**
@@ -240,6 +231,17 @@ ipcMain.on(DELETE_TABLE, async (event, args) => {
   event.reply(DELETE_TABLE_REPLY, tablesAfterDeletion);
 });
 
+//======================== I N D I V  T A B L E ===============================//
+/**
+ * called from ./components/db/IndivTable.js
+ * when the user submits the changes to the table
+ */
+// args === [selectedTable,selectedDb,tableMatrix]
+ipcMain.on(UPDATE_TABLE_DATA, async (event, args) => {
+  const response = await updateTableData(...args);
+  typeof response === 'string' && event.reply(DATABASE_ERROR, response);
+});
+
 /**
  * called from ./components/db/IndivTable.js
  * when the user submits request for deleting a row in the grid
@@ -249,14 +251,22 @@ ipcMain.on(REMOVE_TABLE_ROW, async (_, args) => {
   await removeTableRow(...args);
 });
 
+//======================== U T I L S =================================//
 /**
- * called from ./components/db/ConnectPage.js
- * when the user submits request for login with a specific connection tile
+ * called when user lands on either ./components/db/AllDBs.js or
+ * ./components/db/ConnectPage.js ...
+ * Logic in components checks to see if the express server is running (typically
+ * meaning it's already serving up some specific DB's schema), and kills it so that
+ * the server isn't stuck servicing a DB we are no longer inside of.
  */
-ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
-  await setUserProvidedDbConnection(userConfig);
+ipcMain.on(CLOSE_SERVER, async (event, args) => {
+  closeServer(expressServer, 'closeserver*****');
 });
 
+/**Called from ./components/reuse/Header.js on refresh button
+ * args === [currentComponent (component that is requesting a refresh), any other args
+ * necessary to make the backend requests for that component to successfully refresh]
+ */
 ipcMain.on(REFRESH, async (event, args) => {
   const currentComponent = args[0];
   const refreshArgs = args[1];
