@@ -1,4 +1,7 @@
 import { toast } from 'react-toastify';
+
+// Toast notifications for UX and passing on error messages from backend
+
 export const notifyRemoved = (parent, deletedItem) =>
   toast(`✌️✌️Removed "${deletedItem}" from ${parent}!`, {
     position: 'top-center',
