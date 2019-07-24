@@ -12,26 +12,18 @@ const useStyles = makeStyles({
   card: {
     // minWidth: 275
     height: 150,
-    width: 150,
+    width: 150
   },
   pos: {
-    marginBottom: 0,
-  },
+    marginBottom: 0
+  }
 });
 
 function DisplayCard(props) {
   const classes = useStyles();
 
   return (
-    <Button
-      // onClick={() =>
-      //   props.type === "db"
-      //     ? props.history.push("/tables")
-      //     : props.history.push("/single")
-      // }
-      size="large"
-      fullWidth={true}
-    >
+    <Button size="large" fullWidth={true}>
       <Card className={classes.card}>
         <CardContent>
           <img
