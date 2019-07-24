@@ -15,7 +15,7 @@ import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
 const nativeImage = electron.remote.nativeImage;
 const { dialog } = electron.remote;
-const iconPath = path.join('app/assets/images/table-icon.png');
+const iconPath = path.join('app/assets/images/PURPLE_QLSticoV3.png');
 const tableIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import Menu from '@material-ui/core/Menu';

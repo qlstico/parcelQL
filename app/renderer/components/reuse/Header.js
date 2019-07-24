@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import Refresh from '@material-ui/icons/Refresh';
 import BreadcrumbsElem from './Breadcrumbs';
-import logoImg from '../../../assets/images/whiteLogo.png';
+import logoImg from '../../../assets/images/QLSticoV3.png';
 import { Button } from '@material-ui/core/';
 import { DbRelatedContext } from '../index';
 const { REFRESH, REFRESH_REPLY } = require('../../constants/ipcNames');
