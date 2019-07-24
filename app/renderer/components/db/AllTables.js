@@ -122,7 +122,7 @@ const AllTables = props => {
     title: 'Confirm Deletion',
     message: `Are you sure you want to delete this table: "${currentlySelected}" ?`,
     detail:
-      'This is a permant deletion option, all information contained will be lost.',
+      'This is a permanent deletion option, all information contained will be lost.',
     icon: tableIcon
   };
 
