@@ -2,7 +2,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <p align="center">
-<img width="250" alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/61082299-31d80100-a3f7-11e9-812f-00f9916ef804.png">
+<img alt="SeeQL Title" src="https://user-images.githubusercontent.com/46896778/61765218-2814ad00-adaa-11e9-9188-1bcf42fcca41.png">
 </p>
 
 ---
@@ -51,7 +51,7 @@ After establishing a valid connection, you will see all your PG databases render
 
 You have the option of pressing the `Add A Database` button at any time while on this page. This will prompt you to provide a database name to create.
 
-You also have the option of deleting a database by single-clicking to select it (indicated with dark grey background behind tile), and the `Remove Database` button will apear at the top of the page. Clicking this will delete the selected database.
+You also have the option of deleting a database by single-clicking to select it (indicated with dark grey background behind tile), and the `Remove Database` button will apear at the top of the page. Clicking this will prompt confirmation before deletion.
 
 ![Add or Delete DB](https://user-images.githubusercontent.com/46896778/60851645-00c2bb00-a1c2-11e9-894d-af6fef86f4cc.png)
 

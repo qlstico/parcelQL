@@ -29,12 +29,12 @@ h1 {
 }
 
 #headerLogo {
-  height: 135px;
-  width: 135px;
-  margin-top: -10px;
-  margin-bottom: -40px;
-  margin-left: -35px;
-  margin-right: -45px;
+  height: 85px;
+  width: 85px;
+  margin-top: 0px;
+  /* margin-bottom: -40px; */
+  margin-left: 0px;
+  /* margin-right: -45px; */
   cursor: pointer;
 }
 

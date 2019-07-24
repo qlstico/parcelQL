@@ -13,7 +13,7 @@ const path = require('path');
 const { ipcRenderer } = electron;
 const nativeImage = electron.remote.nativeImage;
 const { dialog } = electron.remote;
-const iconPath = path.join('app/assets/images/db-icon.png');
+const iconPath = path.join('app/assets/images/PURPLE_QLSticoV3.png');
 const dbIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
