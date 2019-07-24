@@ -100,6 +100,10 @@ The refresh button retrieves any new information included in your databases that
 
 ![Navigation](https://user-images.githubusercontent.com/46896778/61070896-b61d8a80-a3dd-11e9-86c1-94200ab864f9.png)
 
+## Common Issues
+
+If you have pulled a new version of the application and clicking the DB connection tile crashes the app, delete your existing connection tile and create a new one. If you continue to experience difficulty, please submit a Github issue.
+
 ## Resources
 
 Built on Electron, React and Postgraphile.
