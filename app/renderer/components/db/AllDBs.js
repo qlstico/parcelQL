@@ -4,6 +4,7 @@ import {
   DbRelatedContext,
   notifyAdded,
   notifyRemoved,
+  notifyError,
   RefreshCircle
 } from '../index';
 import Grid from '@material-ui/core/Grid';
@@ -68,6 +69,9 @@ const AllDBs = props => {
     setCurrentlySelected(dbName);
   };
 
+  // Error State
+  const [errorMessage, setErrorMessage] = useState(null);
+
   // Hooks for setting/retrieving neccesary info to/from config file and context provider
   useEffect(() => {
     setCurrentComponent('alldbs');
@@ -98,10 +102,22 @@ const AllDBs = props => {
     setSelectedDb(dbname); // set db name in context
 
     await ipcRenderer.send(GET_TABLE_NAMES, dbname); // message to get all table names
-    await ipcRenderer.once(GET_TABLE_NAMES_REPLY, (_, tableNames) => {
-      setTablesContext(tableNames);
+    await ipcRenderer.once(GET_TABLE_NAMES_REPLY, (_, tablesResponse) => {
+      // checks to see if response is a string b/c we expect an array and a string
+      // means we've instead returned the error message from the back end
+      if (typeof tablesResponse === 'string') {
+        if (errorMessage !== tablesResponse) {
+          // notify user of the error that occured in trying to connect, and do not
+          // allow to next page
+          notifyError(tablesResponse);
+        }
+      } else {
+        // on successful connection and table names response, set provider state with
+        // these table names and allow to move forward to next component.
+        setTablesContext(tablesResponse);
+        props.history.push('/tables'); // finally push onto the next component
+      }
     });
-    props.history.push('/tables'); // finally push onto the next component
   };
 
   // Fucntion for deleting the currently selected DB

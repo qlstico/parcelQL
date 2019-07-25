@@ -22,7 +22,8 @@ const defaultConnectionSettings = {
   host: 'localhost',
   dbTypePassword: '',
   databaseName: '',
-  ssl: false
+  ssl: false,
+  port: 5432
 };
 
 const Create = props => {

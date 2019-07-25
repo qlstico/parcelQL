@@ -2,11 +2,11 @@ const { encrypt } = require('../server/util');
 const pg = require('pg');
 
 const DB_CONNECTION = {
-  user: '', // env var: PGUSER
-  database: '', // env var: PGDATABASE
-  password: '', // env var: PGPASSWORD
+  user: '',
+  database: '',
+  password: '',
   host: 'localhost', // Server hosting the postgres database
-  port: 5432, // env var: PGPORT
+  port: 5432,
   idleTimeoutMillis: 300, // how long a client is allowed to remain idle before being closed
   ssl: false
 };
@@ -17,12 +17,13 @@ const setDatabase = dbName => {
 };
 
 const setUserProvidedDbConnection = userConnection => {
-  const { user, password, host, ssl, databaseName } = userConnection;
+  const { user, password, host, ssl, databaseName, port } = userConnection;
   DB_CONNECTION.user = user;
   DB_CONNECTION.password = encrypt(password, 'decrypt');
   DB_CONNECTION.host = host;
   DB_CONNECTION.ssl = ssl;
   DB_CONNECTION.database = databaseName;
+  DB_CONNECTION.port = port;
 };
 
 const getAllDbs = async () => {
@@ -86,6 +87,7 @@ const getAllTables = async database => {
     return response.rows.map(({ table_name: tableName }) => tableName);
   } catch (error) {
     console.log(error);
+    return error.message;
   }
 };
 
