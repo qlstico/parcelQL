@@ -82,7 +82,8 @@ function setupExpress() {
   const pglConfig = {
     watchPg: true,
     graphiql: true,
-    enhanceGraphiql: true
+    enhanceGraphiql: true,
+    handleErrors: true
   };
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
@@ -189,7 +190,8 @@ ipcMain.on(CREATE_DATABASE, async (event, databaseName) => {
  * and replies with updated array of all db names after dletion
  */
 ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
-  await deleteDatabase(databaseName);
+  const response = await deleteDatabase(databaseName);
+  event.reply(DATABASE_ERROR, response);
 });
 
 /**

@@ -27,8 +27,19 @@ const setUserProvidedDbConnection = userConnection => {
 };
 
 const getAllDbs = async () => {
+  const { database } = DB_CONNECTION;
+  // If user config specified a specifc DB to connect to, we don't need to worry
+  // about filtering/finding and error checking from the pg response as the
+  // pg connection will automatically throw an error if anything is wrong with the config,
+  // such as an invalid db name.
   const pool = new pg.Pool(DB_CONNECTION);
   try {
+    // If user config specifies a db to connect to, simply return the db name as an
+    // array. If this code even runs, then that means the db connection didn't error out and
+    // the db name provided is valid.
+    if (database !== '') return [database];
+
+    // Otherwise make the pg query to retrieve all db names.
     const response = await pool.query(
       'SELECT datname FROM pg_database WHERE datistemplate = false'
     );
@@ -55,6 +66,7 @@ const createDatabase = async databaseName => {
     return arrayOfDbNames;
   } catch (error) {
     console.log(error);
+    return error.message;
   }
 };
 
@@ -62,15 +74,16 @@ const deleteDatabase = async databaseName => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`DROP DATABASE "${databaseName}"`);
-    const response = await pool.query(
-      'SELECT datname FROM pg_database WHERE datistemplate = false'
-    );
-    const arrayOfDbNames = response.rows.map(({ datname }) => {
-      return datname;
-    });
-    return arrayOfDbNames;
+    // const response = await pool.query(
+    //   'SELECT datname FROM pg_database WHERE datistemplate = false'
+    // );
+    // const arrayOfDbNames = response.rows.map(({ datname }) => {
+    //   return datname;
+    // });
+    return [];
   } catch (error) {
     console.log(error);
+    return error.message;
   }
 };
 

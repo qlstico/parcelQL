@@ -21,7 +21,8 @@ const {
   CLOSE_SERVER,
   CREATE_DATABASE,
   CREATE_DATABASE_REPLY,
-  DELETE_DATABASE
+  DELETE_DATABASE,
+  DATABASE_ERROR
 } = require('../../constants/ipcNames');
 
 //For rendering confirmation to delete prompt and injecting logo into prompt
@@ -92,9 +93,15 @@ const AllDBs = props => {
   const createNewDatabase = async newDbName => {
     await ipcRenderer.send(CREATE_DATABASE, newDbName);
     await ipcRenderer.once(CREATE_DATABASE_REPLY, (event, updatedDatabases) => {
-      setAllDbNames(updatedDatabases);
+      if (typeof updatedDatabases === 'string') {
+        if (errorMessage !== updatedDatabases) {
+          notifyError(updatedDatabases);
+        }
+      } else {
+        setAllDbNames(updatedDatabases);
+        notifyAdded('your PG databses', newDbName);
+      }
     });
-    notifyAdded('your PG databses', newDbName);
   };
   // when user clicks database, sends message to trigger getting the table data
   // set context with table names
@@ -124,9 +131,15 @@ const AllDBs = props => {
   const deleteDb = async selectedDbName => {
     if (selectedDbName) {
       await ipcRenderer.send(DELETE_DATABASE, selectedDbName);
-      setAllDbNames(prevDbs => prevDbs.filter(db => db !== selectedDbName));
-      setCurrentlySelected(false);
-      notifyRemoved('your PG databases', selectedDbName);
+      await ipcRenderer.once(DATABASE_ERROR, (_, errorMsg) => {
+        if (typeof errorMsg === 'string' && errorMessage !== errorMsg) {
+          notifyError(errorMsg);
+          return null;
+        }
+        setAllDbNames(prevDbs => prevDbs.filter(db => db !== selectedDbName));
+        setCurrentlySelected(false);
+        notifyRemoved('your PG databases', selectedDbName);
+      });
     }
   };
 
