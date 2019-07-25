@@ -13,12 +13,13 @@ Welcome to **QLStico(beta)**: An easy-to-use desktop application redefining Post
 
 #### Requirements
 
-MacOS is fully supported, Linux supported through manually compiling the package. Postgres should be installed on your machine.
+MacOS is fully supported, Linux supported through manually compiling the package. Postgres must be accessible on your machine and/or remote server on port 5432.
 
 #### How to Install
 
 Beta Release 0.0.1
 Download available at [www.qlstico.io](https://www.qlstico.io)
+_You may need to configure your security settings to allow downloaded file to open_
 
 ## Features
 
