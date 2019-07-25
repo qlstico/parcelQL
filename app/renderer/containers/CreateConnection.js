@@ -62,7 +62,10 @@ const Create = props => {
       : [formData];
     storage.set('connectionData', newArray, function(error) {
       if (error) throw error;
-      else notifyAdded('saved Connections', `${formData.user}`);
+      else {
+        notifyAdded('saved Connections', `${formData.user}`);
+        props.history.push('/');
+      }
     });
   };
 
@@ -80,7 +83,6 @@ const Create = props => {
     e.preventDefault();
     newConfig.password = encrypt(newConfig.password, 'encrypt');
     writeToLocalStorage(newConfig);
-    props.history.push('/');
   };
   return (
     newConfig && (

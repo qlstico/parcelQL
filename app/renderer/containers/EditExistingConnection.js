@@ -33,6 +33,7 @@ const Edit = props => {
       }),
       function(error) {
         if (error) throw error;
+        else props.history.push('/');
       }
     );
   };
@@ -50,7 +51,6 @@ const Edit = props => {
   const handleSubmit = e => {
     e.preventDefault();
     writeToLocalStorage();
-    props.history.push('/');
   };
   return (
     thisUser && (
