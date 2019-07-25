@@ -21,7 +21,8 @@ const defaultConnectionSettings = {
   password: '',
   host: 'localhost',
   dbTypePassword: '',
-  databaseName: ''
+  databaseName: '',
+  ssl: false
 };
 
 const Create = props => {
@@ -69,6 +70,11 @@ const Create = props => {
     setNewConfig({ ...newConfig, [name]: value });
   };
 
+  const handleCheckboxChange = e => {
+    const { name, checked } = e.target;
+    setNewConfig({ ...newConfig, [name]: checked });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     newConfig.password = encrypt(newConfig.password, 'encrypt');
@@ -80,6 +86,7 @@ const Create = props => {
       <Login
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
+        handleCheckboxChange={handleCheckboxChange}
         values={newConfig}
       />
     )

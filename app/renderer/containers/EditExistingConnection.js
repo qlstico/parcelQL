@@ -42,6 +42,11 @@ const Edit = props => {
     setThisUser({ ...thisUser, [name]: value });
   };
 
+  const handleCheckboxChange = e => {
+    const { name, checked } = e.target;
+    setThisUser({ ...thisUser, [name]: checked });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     writeToLocalStorage();
@@ -52,6 +57,7 @@ const Edit = props => {
       <Login
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
+        handleCheckboxChange={handleCheckboxChange}
         values={thisUser}
       />
     )

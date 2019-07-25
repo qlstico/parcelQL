@@ -7,7 +7,8 @@ const DB_CONNECTION = {
   password: '', // env var: PGPASSWORD
   host: 'localhost', // Server hosting the postgres database
   port: 5432, // env var: PGPORT
-  idleTimeoutMillis: 300 // how long a client is allowed to remain idle before being closed
+  idleTimeoutMillis: 300, // how long a client is allowed to remain idle before being closed
+  ssl: false
 };
 
 // Helper Functions
@@ -16,10 +17,12 @@ const setDatabase = dbName => {
 };
 
 const setUserProvidedDbConnection = userConnection => {
-  const { user, password, host } = userConnection;
+  const { user, password, host, ssl, databaseName } = userConnection;
   DB_CONNECTION.user = user;
   DB_CONNECTION.password = encrypt(password, 'decrypt');
   DB_CONNECTION.host = host;
+  DB_CONNECTION.ssl = ssl;
+  DB_CONNECTION.database = databaseName;
 };
 
 const getAllDbs = async () => {

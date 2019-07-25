@@ -9,12 +9,6 @@ import {
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { electron } from '../../utils/electronImports';
-const path = require('path');
-const { ipcRenderer } = electron;
-const nativeImage = electron.remote.nativeImage;
-const { dialog } = electron.remote;
-const iconPath = path.join('app/assets/images/PURPLE_QLSticoV3.png');
-const dbIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
@@ -28,6 +22,14 @@ const {
   CREATE_DATABASE_REPLY,
   DELETE_DATABASE
 } = require('../../constants/ipcNames');
+
+//For rendering confirmation to delete prompt and injecting logo into prompt
+// const path = require('path');
+const { ipcRenderer } = electron;
+const nativeImage = electron.remote.nativeImage;
+const { dialog } = electron.remote;
+const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
+const dbIcon = nativeImage.createFromPath(iconPath);
 
 // For styling MaterialUI components
 const useStyles = makeStyles(theme => ({
@@ -43,7 +45,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AllDBs = props => {
-  console.log(iconPath);
   // For styling:
   const classes = useStyles();
   const [spacing] = useState(2);
