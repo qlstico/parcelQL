@@ -122,9 +122,13 @@ function PrimarySearchAppBar(props) {
             </IconButton>
             <IconButton
               aria-label="autorenew"
+              className={currentComponent === 'connect' ? 'loading' : ''}
               onClick={() => props.history.goBack()}
             >
-              <ArrowBack style={{ color: '#FFFFFF' }} />
+              <ArrowBack
+                style={{ color: '#FFFFFF' }}
+                className={currentComponent === 'connect' ? 'loading' : ''}
+              />
             </IconButton>
           </div>
         </Toolbar>
