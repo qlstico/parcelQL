@@ -48,24 +48,22 @@ const getAllDbs = async () => {
     });
     return arrayOfDbNames;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return error.message;
   }
 };
 
+// Error handling thanks to pool.query throwing errors on bad connections relieves the stress
+// of having to reaload any queries after CRUD operations - if they succeed we just have the front end
+// proceed to add the values to the GUI itself.. But we let the front end if anything fails here so it
+// doesn't reflect inaccurate information.
 const createDatabase = async databaseName => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`CREATE DATABASE "${databaseName}"`);
-    const response = await pool.query(
-      'SELECT datname FROM pg_database WHERE datistemplate = false'
-    );
-    const arrayOfDbNames = response.rows.map(({ datname }) => {
-      return datname;
-    });
-    return arrayOfDbNames;
+    return null;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return error.message;
   }
 };
@@ -74,15 +72,9 @@ const deleteDatabase = async databaseName => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`DROP DATABASE "${databaseName}"`);
-    // const response = await pool.query(
-    //   'SELECT datname FROM pg_database WHERE datistemplate = false'
-    // );
-    // const arrayOfDbNames = response.rows.map(({ datname }) => {
-    //   return datname;
-    // });
-    return [];
+    return null;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return error.message;
   }
 };
@@ -96,10 +88,9 @@ const getAllTables = async database => {
       WHERE table_type = 'BASE TABLE'
       AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
     );
-    // console.log(response);
     return response.rows.map(({ table_name: tableName }) => tableName);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return error.message;
   }
 };
@@ -109,19 +100,14 @@ const createTable = async (selectedDb, newTableName) => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(
-      `CREATE TABLE IF NOT EXISTS "${newTableName}" (
+      `CREATE TABLE "${newTableName}" (
       "id" SERIAL PRIMARY KEY
       );`
     );
-
-    const response = await pool.query(
-      `SELECT table_name FROM  information_schema.tables
-      WHERE table_type = 'BASE TABLE'
-      AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
-    );
-    return response.rows.map(({ table_name: tableName }) => tableName);
+    return null;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return error.message;
   }
 };
 
@@ -130,15 +116,9 @@ const deleteTable = async (selectedDb, selectedTableName) => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`DROP TABLE "${selectedTableName}"`);
-
-    const response = await pool.query(
-      `SELECT table_name FROM  information_schema.tables
-      WHERE table_type = 'BASE TABLE'
-      AND table_schema NOT IN ('pg_catalog', 'information_schema', 'management','postgraphile_watch') and table_name != '_Migration'`
-    );
-    return response.rows.map(({ table_name: tableName }) => tableName);
+    return null;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -149,7 +129,7 @@ const getTableData = async (table, database) => {
     const response = await pool.query(`SELECT * from "${table}"`);
     return response.rows;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -161,6 +141,7 @@ const removeTableRow = async (table, database, id) => {
     return response.rows;
   } catch (error) {
     console.error(error);
+    return error.message;
   }
 };
 
@@ -169,7 +150,6 @@ const tranformCellToSql = ({ key, value, id }) => {
 };
 
 const updateTableData = async (table, database, allUpdatedCells) => {
-  // console.log(allUpdatedCells);
   setDatabase(database);
   const pool = new pg.Pool(DB_CONNECTION);
   const keysAndParamsNestedArr = allUpdatedCells.reduce((accum, cell) => {
@@ -185,6 +165,7 @@ const updateTableData = async (table, database, allUpdatedCells) => {
       await pool.query(queryStr, params);
     }
   } catch (error) {
+    console.error(error);
     return error.message;
   }
 };

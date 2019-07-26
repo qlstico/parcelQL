@@ -13,7 +13,7 @@ export const notifyRemoved = (parent, deletedItem) =>
   });
 
 export const notifyAdded = (parent, addedItem) =>
-  toast.success(`🦄🦄 Added "${addedItem}" to ${parent}!`, {
+  toast.success(`👌👌Added "${addedItem}" to ${parent}!`, {
     position: 'top-center',
     autoClose: 3000,
     hideProgressBar: false,
@@ -24,7 +24,7 @@ export const notifyAdded = (parent, addedItem) =>
 
 export const notifyError = errorMessage =>
   toast.error(
-    `😭😭Oh no! Looks like something went wrong!  
+    `👎👎Oh no! Looks like something went wrong!  
      >>>ERROR : ${errorMessage} <<<`,
     {
       position: 'top-center',

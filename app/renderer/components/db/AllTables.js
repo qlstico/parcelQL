@@ -5,7 +5,8 @@ import {
   GraphQLDisplayCard,
   VoyagerDisplayCard,
   notifyRemoved,
-  notifyAdded
+  notifyAdded,
+  notifyError
 } from '../index';
 const path = require('path');
 import Grid from '@material-ui/core/Grid';
@@ -28,7 +29,7 @@ const {
   CREATE_TABLE,
   CREATE_TABLE_REPLY,
   DELETE_TABLE,
-  DELETE_TABLE_REPLY
+  DATABASE_ERROR
 } = require('../../constants/ipcNames');
 
 // For styling MaterialUI components
@@ -49,6 +50,9 @@ const AllTables = props => {
   // FOr styling:
   const classes = useStyles();
   const [spacing] = useState(2);
+
+  // Error State
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // Getting relevant information from context provider component
   const {
@@ -96,9 +100,15 @@ const AllTables = props => {
     if (newTableName) {
       await ipcRenderer.send(CREATE_TABLE, [currentDb, newTableName]);
       await ipcRenderer.once(CREATE_TABLE_REPLY, (event, updatedTables) => {
-        setTablesContext(updatedTables);
+        if (typeof updatedTables === 'string') {
+          if (errorMessage !== updatedTables) {
+            notifyError(updatedTables);
+          }
+        } else {
+          setTablesContext(prevTables => prevTables.concat(newTableName));
+          notifyAdded(currentDb, newTableName);
+        }
       });
-      notifyAdded(currentDb, newTableName);
     }
   };
 
@@ -106,12 +116,18 @@ const AllTables = props => {
   const deleteTable = async (currentDb, selectedTableName) => {
     if (selectedTableName) {
       await ipcRenderer.send(DELETE_TABLE, [currentDb, selectedTableName]);
-      setTablesContext(prevTables =>
-        prevTables.filter(table => table !== selectedTableName)
-      );
-      setCurrentlySelected(false);
+      await ipcRenderer.once(DATABASE_ERROR, (_, errorMsg) => {
+        if (typeof errorMsg === 'string' && errorMessage !== errorMsg) {
+          notifyError(errorMsg);
+          return null;
+        }
+        setTablesContext(prevTables =>
+          prevTables.filter(table => table !== selectedTableName)
+        );
+        setCurrentlySelected(false);
+        notifyRemoved(currentDb, selectedTableName);
+      });
     }
-    notifyRemoved(currentDb, selectedTableName);
   };
 
   // Options object for the confirmation box

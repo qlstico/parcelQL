@@ -98,7 +98,7 @@ const AllDBs = props => {
           notifyError(updatedDatabases);
         }
       } else {
-        setAllDbNames(updatedDatabases);
+        setAllDbNames(prevDbs => prevDbs.concat(newDbName));
         notifyAdded('your PG databses', newDbName);
       }
     });
