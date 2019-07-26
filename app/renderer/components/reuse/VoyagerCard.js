@@ -9,12 +9,12 @@ import SchemaLogo from '../../../assets/images/schema.png';
 
 const useStyles = makeStyles({
   card: {
-    height: 150,
-    width: 150,
+    height: 130,
+    width: 135
   },
   pos: {
-    marginBottom: 0,
-  },
+    marginBottom: 0
+  }
 });
 
 const openVoyager = () => {
@@ -28,11 +28,12 @@ function VoyagerDisplayCard() {
     <Button onClick={() => openVoyager()} size="large" align="center">
       <Card className={classes.card}>
         <CardContent>
-          <img src={SchemaLogo} height="60%" width="60%" />
+          <img src={SchemaLogo} height="50%" width="50%" />
 
           <Typography
             className={classes.pos}
             align="center"
+            variant="body2"
             color="textSecondary"
           >
             *Visualize Schema

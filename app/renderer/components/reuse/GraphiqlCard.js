@@ -9,12 +9,12 @@ import graphQlLogo from '../../../assets/images/graphql.png';
 
 const useStyles = makeStyles({
   card: {
-    height: 150,
-    width: 150,
+    height: 130,
+    width: 135
   },
   pos: {
-    marginBottom: 0,
-  },
+    marginBottom: 0
+  }
 });
 
 const openGraphiql = () => {
@@ -28,11 +28,12 @@ function GraphQLDisplayCard() {
     <Button onClick={() => openGraphiql()} size="large" align="center">
       <Card className={classes.card}>
         <CardContent>
-          <img src={graphQlLogo} height="60%" width="60%" />
+          <img src={graphQlLogo} height="50%" width="50%" />
 
           <Typography
             className={classes.pos}
             align="center"
+            variant="body2"
             color="textSecondary"
           >
             *graphQL Queries
