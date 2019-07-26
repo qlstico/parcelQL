@@ -86,10 +86,28 @@ const IndivTable = () => {
   // Error State
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Allows a pseudo loading screen for a predetermined amount of time to allow
+  // the app some time to retrieve larger data sets in case it doesn't do so immediately
+  // before deciding there is nothing to display
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
+
   // Using this as componentDidMount && componentDidUpdate b/c the provider data from
   // context does not make it in time for the initial mounting
   useEffect(() => {
     setCurrentComponent('indivtable');
+
+    // If the requested data comes back empty, start a timer to render a loading screen
+    // and if the elapsed amount of time is passed, we render a message that this data view
+    // is empty
+    let startTimeout;
+    if (!tableMatrix.length) {
+      startTimeout = setTimeout(() => {
+        if (!loadTimedOut) {
+          setLoadTimedOut(true);
+        }
+      }, 2500);
+    }
+
     // Creating a 2-d matrix of the selectedTableData from provider in order to
     // represent each object in the selectedTableData array as a row, and each of the
     // values in the 'row obj' as a cell
@@ -104,6 +122,9 @@ const IndivTable = () => {
     // affecting the true values represented by the provider. This lets us have
     // a sandbox to play with any changes without commiting to them until we hit submit.
     setTableMatrix(matrix);
+
+    if (tableMatrix.length) clearTimeout(startTimeout);
+
     // We're listening for any changes in selectedDataTable since it takes a little
     // bit for this to come through, therefore we need to update once we actually
     // get ahold of this to properly set our state an kick off rending of the grid table.
@@ -220,14 +241,6 @@ const IndivTable = () => {
     console.log(changesMade);
   };
 
-  // pseudo-loading message
-  window.setTimeout(() => {
-    const loadingOrEmpty = document.getElementById('load-or-empty');
-    if (loadingOrEmpty) {
-      loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
-    }
-  }, 3000);
-
   return tableMatrix.length ? (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -297,7 +310,7 @@ const IndivTable = () => {
                           : null
                       }
                       // Set this row to be the selected row for 'edit mode' in
-                      // the state to rerender as a textField
+                      // the state to rerender as a textField.
                       onDoubleClick={() => enableEditRow(id)}
                       // If this is not an 'edit mode' row, clicking on it will
                       // remove 'edit mode'
@@ -365,10 +378,12 @@ const IndivTable = () => {
         </Button>
       )}
     </div>
-  ) : (
+  ) : loadTimedOut === true ? (
     <h1 id="load-or-empty" className="load-or-refresh">
-      One second please...
+      Couldn't find anything here!
     </h1>
+  ) : (
+    <RefreshCircle />
   );
 };
 

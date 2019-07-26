@@ -4,7 +4,7 @@
 
 h1 {
   font-family: helvetica;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 200;
 }
 
@@ -29,8 +29,8 @@ h1 {
 }
 
 #headerLogo {
-  height: 85px;
-  width: 85px;
+  height: 80px;
+  width: 80px;
   margin-top: 0px;
   /* margin-bottom: -40px; */
   margin-left: 0px;

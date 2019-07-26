@@ -58,8 +58,7 @@ const AllDBs = props => {
     serverStatus,
     setServerStatus,
     allDbNames,
-    setAllDbNames,
-    setCurrentComponent
+    setAllDbNames
   } = useContext(DbRelatedContext);
 
   // Setting up initial state values for rendering/interacting with components
@@ -73,14 +72,33 @@ const AllDBs = props => {
   // Error State
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Allows a pseudo loading screen for a predetermined amount of time to allow
+  // the app some time to retrieve larger data sets in case it doesn't do so immediately
+  // before deciding there is nothing to display
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
+
   // Hooks for setting/retrieving neccesary info to/from config file and context provider
   useEffect(() => {
-    setCurrentComponent('alldbs');
+    // If the requested data comes back empty, start a timer to render a loading screen
+    // and if the elapsed amount of time is passed, we render a message that this data view
+    // is empty
+    let startTimeout;
+    if (!allDbNames.length) {
+      startTimeout = setTimeout(() => {
+        if (!loadTimedOut) {
+          setLoadTimedOut(true);
+        }
+      }, 2500);
+    }
     // componentDidMount to kill the server if it is open
     if (serverStatus) {
       ipcRenderer.send(CLOSE_SERVER);
       setServerStatus(false);
     }
+
+    // If and when the data requeted does finally come through, we remove the countdown
+    // for the loading screen
+    if (allDbNames.length) clearTimeout(startTimeout);
   }, [serverStatus, allDbNames]);
 
   // Handles input for new DB name from create new DB pop out form
@@ -122,7 +140,7 @@ const AllDBs = props => {
         // on successful connection and table names response, set provider state with
         // these table names and allow to move forward to next component.
         setTablesContext(tablesResponse);
-        props.history.push('/tables'); // finally push onto the next component
+        props.history.push('/allTables'); // finally push onto the next component
       }
     });
   };
@@ -197,15 +215,6 @@ const AllDBs = props => {
     </Menu>
   );
 
-  // Allows a pseudo loading message for a predetermined amount of time to allow
-  // the app some time to retrieve larger data sets in case it doesn't do so immediately
-  window.setTimeout(() => {
-    const loadingOrEmpty = document.getElementById('load-or-empty');
-    if (loadingOrEmpty) {
-      loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
-    }
-  }, 2500);
-
   return (
     <div>
       <h1>Databases: </h1>
@@ -263,8 +272,10 @@ const AllDBs = props => {
                   />
                 </Grid>
               ))
+            ) : loadTimedOut === true ? (
+              <h1 id="load-or-empty">Couldn't find anything here!</h1>
             ) : (
-              <h1 id="load-or-empty">One second please...</h1>
+              <RefreshCircle />
             )}
           </Grid>
         </Grid>

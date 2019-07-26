@@ -45,7 +45,6 @@ const ConnectPage = props => {
     serverStatus,
     setServerStatus,
     setAllDbNames,
-    setCurrentComponent,
     setCurrentUser
   } = useContext(DbRelatedContext);
 
@@ -58,7 +57,6 @@ const ConnectPage = props => {
   };
 
   useEffect(() => {
-    setCurrentComponent('connect');
     existingConnections();
     if (serverStatus) {
       ipcRenderer.send(CLOSE_SERVER);
@@ -96,7 +94,7 @@ const ConnectPage = props => {
         // on successful connection and db names response, set provider state with
         // these db names and allow to move forward to next component.
         setAllDbNames(dbResponse);
-        props.history.push('/dbs');
+        props.history.push('/allDBs');
       }
     });
   };
@@ -111,7 +109,7 @@ const ConnectPage = props => {
       <h1>
         Connect:{' '}
         <Button
-          onClick={() => props.history.push('/create')}
+          onClick={() => props.history.push('/createConnection')}
           size="large"
           align-self="right"
         >
@@ -148,7 +146,7 @@ const ConnectPage = props => {
                     <Button
                       onClick={() => {
                         setSelectedUser(connection);
-                        props.history.push('/edit');
+                        props.history.push('/editConnection');
                       }}
                       size="large"
                     >
