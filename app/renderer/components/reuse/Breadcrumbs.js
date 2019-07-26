@@ -32,20 +32,23 @@ const BreadcrumbsElem = props => {
             Connect
           </Link>
         </Button>
-        {props.location === '/edit' ? (
+        {props.location === '/editConnection' ? (
           <Button>
-            <Link id="breadcrumbs" onClick={() => props.history.push('/edit')}>
+            <Link
+              id="breadcrumbs"
+              onClick={() => props.history.push('/editConnection')}
+            >
               Edit Connection
             </Link>
           </Button>
         ) : (
           ''
         )}
-        {props.location === '/create' ? (
+        {props.location === '/createConnection' ? (
           <Button>
             <Link
               id="breadcrumbs"
-              onClick={() => props.history.push('/create')}
+              onClick={() => props.history.push('/createConnection')}
             >
               Create Connection
             </Link>
@@ -54,21 +57,24 @@ const BreadcrumbsElem = props => {
           ''
         )}
         {props.location !== '/' &&
-        props.location !== '/edit' &&
-        props.location !== '/create' ? (
+        props.location !== '/editConnection' &&
+        props.location !== '/createConnection' ? (
           <Button>
-            <Link id="breadcrumbs" onClick={() => props.history.push('/dbs')}>
+            <Link
+              id="breadcrumbs"
+              onClick={() => props.history.push('/allDBs')}
+            >
               Databases
             </Link>
           </Button>
         ) : (
           ''
         )}
-        {props.location === '/tables' ? (
+        {props.location === '/allTables' ? (
           <Button>
             <Link
               id="breadcrumbs"
-              onClick={() => props.history.push('/tables')}
+              onClick={() => props.history.push('/allTables')}
             >
               {selectedDb}
             </Link>
@@ -76,12 +82,12 @@ const BreadcrumbsElem = props => {
         ) : (
           ''
         )}
-        {props.location === '/single' ? (
+        {props.location === '/indivTable' ? (
           <div>
             <Button>
               <Link
                 id="breadcrumbs"
-                onClick={() => props.history.push('/tables')}
+                onClick={() => props.history.push('/allTables')}
               >
                 {selectedDb}
               </Link>
@@ -90,7 +96,7 @@ const BreadcrumbsElem = props => {
             <Button>
               <Link
                 id="breadcrumbs"
-                onClick={() => props.history.push('/single')}
+                onClick={() => props.history.push('/indivTable')}
               >
                 {currentTable}
               </Link>

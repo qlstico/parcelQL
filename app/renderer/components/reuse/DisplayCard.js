@@ -11,8 +11,8 @@ import tableImage from '../../../assets/images/table-icon.png';
 const useStyles = makeStyles({
   card: {
     // minWidth: 275
-    height: 150,
-    width: 150
+    height: 130,
+    width: 135
   },
   pos: {
     marginBottom: 0
@@ -36,6 +36,7 @@ function DisplayCard(props) {
             className={classes.pos}
             align="center"
             color="textSecondary"
+            variant="body2"
             component="p"
             noWrap
           >

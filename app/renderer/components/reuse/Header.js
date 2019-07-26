@@ -62,17 +62,19 @@ function PrimarySearchAppBar(props) {
   } = useContext(DbRelatedContext);
 
   const refreshPage = async () => {
-    if (currentComponent === 'alldbs') {
+    const { location } = props;
+
+    if (location === '/allDBs') {
       await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
       await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
         setAllDbNames(refreshedData);
       });
-    } else if (currentComponent === 'alltables') {
+    } else if (location === '/allTables') {
       await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
       await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
         setTables(refreshedData);
       });
-    } else if (currentComponent === 'indivtable') {
+    } else if (location === '/indivTable') {
       await ipcRenderer.send(REFRESH, [
         currentComponent,
         [selectedTable, selectedDb]
@@ -95,7 +97,7 @@ function PrimarySearchAppBar(props) {
     };
   };
 
-  const throttledRefresh = throttle(refreshPage, 3000);
+  const throttledRefresh = throttle(refreshPage, 2500);
 
   return (
     <div className={classes.grow}>
@@ -122,12 +124,12 @@ function PrimarySearchAppBar(props) {
             </IconButton>
             <IconButton
               aria-label="autorenew"
-              className={currentComponent === 'connect' ? 'loading' : ''}
+              className={props.location.pathname === '/' ? 'loading' : ''}
               onClick={() => props.history.goBack()}
             >
               <ArrowBack
                 style={{ color: '#FFFFFF' }}
-                className={currentComponent === 'connect' ? 'loading' : ''}
+                className={props.location.pathname === '/' ? 'loading' : ''}
               />
             </IconButton>
           </div>

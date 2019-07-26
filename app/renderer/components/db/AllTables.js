@@ -6,7 +6,8 @@ import {
   VoyagerDisplayCard,
   notifyRemoved,
   notifyAdded,
-  notifyError
+  notifyError,
+  RefreshCircle
 } from '../index';
 const path = require('path');
 import Grid from '@material-ui/core/Grid';
@@ -62,8 +63,7 @@ const AllTables = props => {
     setSelectedTableData,
     setServerStatus,
     setSelectedTable,
-    setCurrentTable,
-    setCurrentComponent
+    setCurrentTable
   } = useContext(DbRelatedContext);
 
   // Sets and stores values provided from "add table" field
@@ -92,7 +92,7 @@ const AllTables = props => {
     await ipcRenderer.once(GET_TABLE_CONTENTS_REPLY, (event, tableData) => {
       setSelectedTableData(tableData);
     });
-    props.history.push('/single');
+    props.history.push('/indivTable');
   };
 
   // function for creating table via GUI
@@ -184,24 +184,33 @@ const AllTables = props => {
     </Menu>
   );
 
+  // Allows a pseudo loading screen for a predetermined amount of time to allow
+  // the app some time to retrieve larger data sets in case it doesn't do so immediately
+  // before deciding there is nothing to display
+  const [loadTimedOut, setLoadTimedOut] = useState(false);
+
   // Send provider a true value to kick on server
   useEffect(() => {
-    setCurrentComponent('alltables');
+    // If the requested data comes back empty, start a timer to render a loading screen
+    // and if the elapsed amount of time is passed, we render a message that this data view
+    // is empty
+    let startTimeout;
+    if (!tablesContext.length) {
+      startTimeout = setTimeout(() => {
+        if (!loadTimedOut) {
+          setLoadTimedOut(true);
+        }
+      }, 2500);
+    }
 
     setServerStatus(true);
     //listens for rerender when anything in the tables context provider changes,
     // i.e. a table is added or removed
-  }, [tablesContext]);
 
-  // Allows a pseudo loading message for a predetermined amount of time to allow
-  // the app some time to retrieve larger data sets in case it doesn't do so immediately
-  // before deciding there is nothing to display
-  window.setTimeout(() => {
-    const loadingOrEmpty = document.getElementById('load-or-empty');
-    if (loadingOrEmpty) {
-      loadingOrEmpty.innerHTML = `Couldn't find anything here!`;
-    }
-  }, 2500);
+    // If and when the data requeted does finally come through, we remove the countdown
+    // for the loading screen
+    if (tablesContext.length) clearTimeout(startTimeout);
+  }, [tablesContext]);
 
   return (
     <div>
@@ -261,8 +270,10 @@ const AllTables = props => {
                   />
                 </Grid>
               ))
+            ) : loadTimedOut === true ? (
+              <h1 id="load-or-empty">Couldn't find anything here!</h1>
             ) : (
-              <h1 id="load-or-empty">One second please...</h1>
+              <RefreshCircle />
             )}
           </Grid>
         </Grid>

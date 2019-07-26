@@ -45,7 +45,6 @@ const ConnectPage = props => {
     serverStatus,
     setServerStatus,
     setAllDbNames,
-    setCurrentComponent,
     setCurrentUser
   } = useContext(DbRelatedContext);
 
@@ -58,7 +57,6 @@ const ConnectPage = props => {
   };
 
   useEffect(() => {
-    setCurrentComponent('connect');
     existingConnections();
     if (serverStatus) {
       ipcRenderer.send(CLOSE_SERVER);
@@ -81,8 +79,8 @@ const ConnectPage = props => {
     await ipcRenderer.send(SET_USER_DB_CONNECTION, userConfig);
   };
 
-  const getAllDbNames = async userConfig => {
-    await ipcRenderer.send(GET_DB_NAMES, userConfig);
+  const getAllDbNames = async () => {
+    await ipcRenderer.send(GET_DB_NAMES);
     await ipcRenderer.once(GET_DB_NAMES_REPLY, (_, dbResponse) => {
       // checks to see if response is a string b/c we expect an array and a string
       // means we've instead returned the error message from the back end
@@ -96,7 +94,7 @@ const ConnectPage = props => {
         // on successful connection and db names response, set provider state with
         // these db names and allow to move forward to next component.
         setAllDbNames(dbResponse);
-        props.history.push('/dbs');
+        props.history.push('/allDBs');
       }
     });
   };
@@ -111,7 +109,7 @@ const ConnectPage = props => {
       <h1>
         Connect:{' '}
         <Button
-          onClick={() => props.history.push('/create')}
+          onClick={() => props.history.push('/createConnection')}
           size="large"
           align-self="right"
         >
@@ -148,7 +146,7 @@ const ConnectPage = props => {
                     <Button
                       onClick={() => {
                         setSelectedUser(connection);
-                        props.history.push('/edit');
+                        props.history.push('/editConnection');
                       }}
                       size="large"
                     >

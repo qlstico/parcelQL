@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import { electron, storage } from '../utils/electronImports';
 const { ipcRenderer } = electron;
 const { GET_OS_USER, GET_OS_USER_REPLY } = require('../constants/ipcNames');
-import { Login, notifyAdded } from '../components/index';
+import { Login, notifyAdded, DbRelatedContext } from '../components/index';
 const { encrypt } = require('../../server/util');
 
 const generateID = () => {
@@ -43,7 +43,10 @@ const Create = props => {
     });
   }
 
+  const { setCurrentComponent } = useContext(DbRelatedContext);
+
   useEffect(() => {
+    setCurrentComponent('createConnection');
     // call to retrieve OS Username as default
     getOSUserName();
     //setting the default obj defined as the state for the form values
