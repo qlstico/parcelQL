@@ -21,7 +21,9 @@ const defaultConnectionSettings = {
   password: '',
   host: 'localhost',
   dbTypePassword: '',
-  databaseName: ''
+  databaseName: '',
+  ssl: false,
+  port: 5432
 };
 
 const Create = props => {
@@ -60,7 +62,10 @@ const Create = props => {
       : [formData];
     storage.set('connectionData', newArray, function(error) {
       if (error) throw error;
-      else notifyAdded('saved Connections', `${formData.user}`);
+      else {
+        notifyAdded('saved Connections', `${formData.user}`);
+        props.history.push('/');
+      }
     });
   };
 
@@ -69,17 +74,22 @@ const Create = props => {
     setNewConfig({ ...newConfig, [name]: value });
   };
 
+  const handleCheckboxChange = e => {
+    const { name, checked } = e.target;
+    setNewConfig({ ...newConfig, [name]: checked });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     newConfig.password = encrypt(newConfig.password, 'encrypt');
     writeToLocalStorage(newConfig);
-    props.history.push('/');
   };
   return (
     newConfig && (
       <Login
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
+        handleCheckboxChange={handleCheckboxChange}
         values={newConfig}
       />
     )

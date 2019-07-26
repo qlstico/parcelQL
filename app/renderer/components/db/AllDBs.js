@@ -4,17 +4,12 @@ import {
   DbRelatedContext,
   notifyAdded,
   notifyRemoved,
+  notifyError,
   RefreshCircle
 } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { electron } from '../../utils/electronImports';
-const path = require('path');
-const { ipcRenderer } = electron;
-const nativeImage = electron.remote.nativeImage;
-const { dialog } = electron.remote;
-const iconPath = path.join('app/assets/images/PURPLE_QLSticoV3.png');
-const dbIcon = nativeImage.createFromPath(iconPath);
 import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
@@ -26,8 +21,17 @@ const {
   CLOSE_SERVER,
   CREATE_DATABASE,
   CREATE_DATABASE_REPLY,
-  DELETE_DATABASE
+  DELETE_DATABASE,
+  DATABASE_ERROR
 } = require('../../constants/ipcNames');
+
+//For rendering confirmation to delete prompt and injecting logo into prompt
+// const path = require('path');
+const { ipcRenderer } = electron;
+const nativeImage = electron.remote.nativeImage;
+const { dialog } = electron.remote;
+const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
+const dbIcon = nativeImage.createFromPath(iconPath);
 
 // For styling MaterialUI components
 const useStyles = makeStyles(theme => ({
@@ -43,7 +47,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AllDBs = props => {
-  console.log(iconPath);
   // For styling:
   const classes = useStyles();
   const [spacing] = useState(2);
@@ -67,6 +70,9 @@ const AllDBs = props => {
     setCurrentlySelected(dbName);
   };
 
+  // Error State
+  const [errorMessage, setErrorMessage] = useState(null);
+
   // Hooks for setting/retrieving neccesary info to/from config file and context provider
   useEffect(() => {
     setCurrentComponent('alldbs');
@@ -87,9 +93,15 @@ const AllDBs = props => {
   const createNewDatabase = async newDbName => {
     await ipcRenderer.send(CREATE_DATABASE, newDbName);
     await ipcRenderer.once(CREATE_DATABASE_REPLY, (event, updatedDatabases) => {
-      setAllDbNames(updatedDatabases);
+      if (typeof updatedDatabases === 'string') {
+        if (errorMessage !== updatedDatabases) {
+          notifyError(updatedDatabases);
+        }
+      } else {
+        setAllDbNames(prevDbs => prevDbs.concat(newDbName));
+        notifyAdded('your PG databses', newDbName);
+      }
     });
-    notifyAdded('your PG databses', newDbName);
   };
   // when user clicks database, sends message to trigger getting the table data
   // set context with table names
@@ -97,19 +109,37 @@ const AllDBs = props => {
     setSelectedDb(dbname); // set db name in context
 
     await ipcRenderer.send(GET_TABLE_NAMES, dbname); // message to get all table names
-    await ipcRenderer.once(GET_TABLE_NAMES_REPLY, (_, tableNames) => {
-      setTablesContext(tableNames);
+    await ipcRenderer.once(GET_TABLE_NAMES_REPLY, (_, tablesResponse) => {
+      // checks to see if response is a string b/c we expect an array and a string
+      // means we've instead returned the error message from the back end
+      if (typeof tablesResponse === 'string') {
+        if (errorMessage !== tablesResponse) {
+          // notify user of the error that occured in trying to connect, and do not
+          // allow to next page
+          notifyError(tablesResponse);
+        }
+      } else {
+        // on successful connection and table names response, set provider state with
+        // these table names and allow to move forward to next component.
+        setTablesContext(tablesResponse);
+        props.history.push('/tables'); // finally push onto the next component
+      }
     });
-    props.history.push('/tables'); // finally push onto the next component
   };
 
   // Fucntion for deleting the currently selected DB
   const deleteDb = async selectedDbName => {
     if (selectedDbName) {
       await ipcRenderer.send(DELETE_DATABASE, selectedDbName);
-      setAllDbNames(prevDbs => prevDbs.filter(db => db !== selectedDbName));
-      setCurrentlySelected(false);
-      notifyRemoved('your PG databases', selectedDbName);
+      await ipcRenderer.once(DATABASE_ERROR, (_, errorMsg) => {
+        if (typeof errorMsg === 'string' && errorMessage !== errorMsg) {
+          notifyError(errorMsg);
+          return null;
+        }
+        setAllDbNames(prevDbs => prevDbs.filter(db => db !== selectedDbName));
+        setCurrentlySelected(false);
+        notifyRemoved('your PG databases', selectedDbName);
+      });
     }
   };
 

@@ -33,6 +33,7 @@ const Edit = props => {
       }),
       function(error) {
         if (error) throw error;
+        else props.history.push('/');
       }
     );
   };
@@ -42,16 +43,21 @@ const Edit = props => {
     setThisUser({ ...thisUser, [name]: value });
   };
 
+  const handleCheckboxChange = e => {
+    const { name, checked } = e.target;
+    setThisUser({ ...thisUser, [name]: checked });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     writeToLocalStorage();
-    props.history.push('/');
   };
   return (
     thisUser && (
       <Login
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
+        handleCheckboxChange={handleCheckboxChange}
         values={thisUser}
       />
     )

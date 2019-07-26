@@ -55,30 +55,38 @@ const enableDestroy = require('server-destroy');
 let mainWindow;
 let expressApp;
 let expressServer;
-let LOGGEDIN_USER_CONFIG = { user: '', password: '', host: 'localhost' };
+let LOGGEDIN_USER_CONFIG = {
+  user: '',
+  database: '',
+  password: '',
+  host: 'localhost',
+  port: 5432,
+  ssl: false
+};
 
 // !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
 /* Setup express server when user clicks a db in the front end */
-function setupExpress(databaseName, loggedInUser) {
+function setupExpress() {
   // destructure necessary fields from user object to establish pg server connection
-  const { user, password, host } = loggedInUser;
+  const { user, password, host, ssl, database, port } = LOGGEDIN_USER_CONFIG;
 
   /* Major key is just overwriting existing express app.
   This was the solution */
   expressApp = express();
   // config to connect middleware to database
   const schemaName = 'public';
-  const database = `postgres://${user}:${encrypt(
+  const pgConnection = `postgres://${user}:${encrypt(
     password,
     'decrypt'
-  )}@${host}:5432/${databaseName}`;
+  )}@${host}:${port}/${database}${ssl === true ? '?ssl=true' : ''}`;
   const pglConfig = {
     watchPg: true,
     graphiql: true,
-    enhanceGraphiql: true
+    enhanceGraphiql: true,
+    handleErrors: true
   };
   // setup middleware for creating our graphql api
-  expressApp.use(postgraphile(database, schemaName, pglConfig));
+  expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
   // route for visualizer - access via http://localhost:5000/voyager
   expressApp.use('/voyager', voyagerMiddleware({ endpointUrl: '/graphql' }));
 
@@ -182,7 +190,8 @@ ipcMain.on(CREATE_DATABASE, async (event, databaseName) => {
  * and replies with updated array of all db names after dletion
  */
 ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
-  await deleteDatabase(databaseName);
+  const response = await deleteDatabase(databaseName);
+  event.reply(DATABASE_ERROR, response);
 });
 
 /**
@@ -192,7 +201,8 @@ ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
  */
 ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
   // KICKS ON EXPRESS SERVER TO SERVICE GRAPHQL REQUESTS
-  setupExpress(dbname, LOGGEDIN_USER_CONFIG);
+  LOGGEDIN_USER_CONFIG.database = dbname;
+  setupExpress();
   const tableNames = await getAllTables(dbname);
   event.reply(GET_TABLE_NAMES_REPLY, tableNames);
 });
@@ -225,7 +235,8 @@ ipcMain.on(CREATE_TABLE, async (event, args) => {
  */
 // args === [selectedDb, selectedTableName]
 ipcMain.on(DELETE_TABLE, async (event, args) => {
-  await deleteTable(...args);
+  const response = await deleteTable(...args);
+  event.reply(DATABASE_ERROR, response);
 });
 
 //======================== I N D I V  T A B L E ===============================//

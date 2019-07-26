@@ -1,29 +1,36 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200,
+    width: 200
   },
   dense: {
-    marginTop: 19,
+    marginTop: 19
   },
   menu: {
-    width: 200,
-  },
+    width: 200
+  }
 }));
 
 // Used in CreateConnection and EditExistingConnection
-const Login = ({ handleSubmit, handleInputChange, values }) => {
+const Login = ({
+  handleSubmit,
+  handleInputChange,
+  handleCheckboxChange,
+  values
+}) => {
   const classes = useStyles();
 
   return (
@@ -67,6 +74,19 @@ const Login = ({ handleSubmit, handleInputChange, values }) => {
           onChange={handleInputChange}
           placeholder={values.databaseName}
         />
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="ssl"
+              checked={values.ssl}
+              onChange={handleCheckboxChange}
+              value={values.ssl}
+              color="primary"
+            />
+          }
+          label="SSL?"
+        />
+
         <Button variant="contained" type="submit">
           Submit
         </Button>
