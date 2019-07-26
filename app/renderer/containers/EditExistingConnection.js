@@ -7,9 +7,10 @@ import { storage } from '../utils/electronImports';
 const Edit = props => {
   const [thisUser, setThisUser] = useState(null);
   const [connectionsArray, setConnectionsArray] = useState(null);
-  const { selectedUser } = useContext(DbRelatedContext);
+  const { selectedUser, setCurrentComponent } = useContext(DbRelatedContext);
 
   useEffect(() => {
+    setCurrentComponent('editConnection');
     storage.get('connectionData', (error, data) => {
       if (error) throw error;
       const foundUser = data.find(user => user.id === selectedUser.id);

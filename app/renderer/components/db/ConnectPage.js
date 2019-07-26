@@ -81,8 +81,8 @@ const ConnectPage = props => {
     await ipcRenderer.send(SET_USER_DB_CONNECTION, userConfig);
   };
 
-  const getAllDbNames = async userConfig => {
-    await ipcRenderer.send(GET_DB_NAMES, userConfig);
+  const getAllDbNames = async () => {
+    await ipcRenderer.send(GET_DB_NAMES);
     await ipcRenderer.once(GET_DB_NAMES_REPLY, (_, dbResponse) => {
       // checks to see if response is a string b/c we expect an array and a string
       // means we've instead returned the error message from the back end
