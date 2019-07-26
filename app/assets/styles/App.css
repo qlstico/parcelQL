@@ -28,13 +28,15 @@ h1 {
   cursor: pointer;
 }
 
+.content {
+  padding-top: 90px;
+}
+
 #headerLogo {
   height: 80px;
   width: 80px;
   margin-top: 0px;
-  /* margin-bottom: -40px; */
   margin-left: 0px;
-  /* margin-right: -45px; */
   cursor: pointer;
 }
 

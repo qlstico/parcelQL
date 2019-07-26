@@ -242,7 +242,7 @@ const IndivTable = () => {
   };
 
   return tableMatrix.length ? (
-    <div className={classes.root}>
+    <div className={`${classes.root} content`}>
       <Paper className={classes.paper}>
         <Table className={classes.table} size="small">
           <TableHead>

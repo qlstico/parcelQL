@@ -216,7 +216,7 @@ const AllDBs = props => {
   );
 
   return (
-    <div>
+    <div className="content">
       <h1>Databases: </h1>
       <Button
         edge="end"

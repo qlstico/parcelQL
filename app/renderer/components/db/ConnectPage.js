@@ -105,7 +105,7 @@ const ConnectPage = props => {
     getAllDbNames();
   };
   return (
-    <div>
+    <div className="content">
       <h1>
         Connect:{' '}
         <Button

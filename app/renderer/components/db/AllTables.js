@@ -213,7 +213,7 @@ const AllTables = props => {
   }, [tablesContext]);
 
   return (
-    <div>
+    <div className="content">
       <h1>GraphQL Tools: </h1>
       <GraphQLDisplayCard />
       <VoyagerDisplayCard />

@@ -34,7 +34,7 @@ const Login = ({
   const classes = useStyles();
 
   return (
-    <div>
+    <div className="content">
       <h1>Hello, QLstico!</h1>
       <h1>Redefining databse access starts here!</h1>
       <form className={classes.container} noValidate onSubmit={handleSubmit}>
