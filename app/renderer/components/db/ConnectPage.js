@@ -25,10 +25,11 @@ const useStyles = makeStyles(theme => ({
   },
   card: {
     height: 120,
-    width: 1000
+    width: '95%',
+    marginLeft: 15
   },
   pos: {
-    marginBottom: 0
+    marginBottom: 5
   }
 }));
 
@@ -110,14 +111,19 @@ const ConnectPage = props => {
   return (
     <div className="content">
       <h1 style={{ padding: '15px' }}>
-        Connections:
-        {/* <Button
+        Connections:{' '}
+        <Button
           onClick={() => props.history.push('/createConnection')}
-          size="large"
-          align-self="right"
+          edge="end"
+          color="inherit"
+          type="button"
+          text="white"
+          size="small"
+          // style={{ background: 'white' }}
+          // id="menuButton"
         >
           Create Connection
-        </Button> */}
+        </Button>
       </h1>
       <Grid
         container
@@ -146,7 +152,12 @@ const ConnectPage = props => {
                     </Typography>
                     <Button
                       onClick={() => handleConnect(connection)}
-                      size="large"
+                      edge="end"
+                      color="inherit"
+                      type="button"
+                      text="white"
+                      size="small"
+                      id="menuButton"
                     >
                       Connect
                     </Button>
@@ -155,7 +166,12 @@ const ConnectPage = props => {
                         setSelectedUser(connection);
                         props.history.push('/editConnection');
                       }}
-                      size="large"
+                      edge="end"
+                      color="inherit"
+                      type="button"
+                      text="white"
+                      size="small"
+                      id="menuButton"
                     >
                       Edit
                     </Button>
@@ -163,7 +179,12 @@ const ConnectPage = props => {
                       onClick={() =>
                         removeConnection(connection.id, connection.user)
                       }
-                      size="large"
+                      variant="contained"
+                      type="button"
+                      text="white"
+                      size="small"
+                      style={{ background: '#FF715B' }}
+                      id="menuButton"
                     >
                       Remove
                     </Button>

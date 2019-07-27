@@ -1,6 +1,6 @@
 const { format } = require('url');
 const { encrypt } = require('../server/util');
-const { BrowserWindow, app, ipcMain } = require('electron');
+const { BrowserWindow, app, ipcMain, Menu, MenuItem } = require('electron');
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
 const path = require('path');
@@ -113,6 +113,15 @@ app.on('ready', async () => {
   });
 
   mainWindow.once('ready-to-show', () => {
+    const ctxMenu = new Menu();
+    ctxMenu.append(new MenuItem({ role: 'copy' }));
+    ctxMenu.append(new MenuItem({ role: 'paste' }));
+    ctxMenu.append(new MenuItem({ role: 'cut' }));
+    ctxMenu.append(new MenuItem({ role: 'togglefullscreen' }));
+    ctxMenu.append(new MenuItem({ role: 'toggledevtools' }));
+    mainWindow.webContents.on('context-menu', function(e, params) {
+      ctxMenu.popup(mainWindow, params.x, params.y);
+    });
     mainWindow.show();
     if (isDev) {
       mainWindow.webContents.openDevTools();

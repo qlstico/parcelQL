@@ -217,7 +217,7 @@ const AllDBs = props => {
 
   return (
     <div className="content">
-      <h1>Databases: </h1>
+      <h1 style={{ padding: '15px' }}>Databases: </h1>
       <Button
         edge="end"
         aria-label="create db"

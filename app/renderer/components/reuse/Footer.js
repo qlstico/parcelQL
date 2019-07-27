@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AnnouncementIcon from '@material-ui/icons/Announcement';
 import Toolbar from '@material-ui/core/Toolbar';
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
@@ -52,7 +53,7 @@ function Footer(props) {
       <Toolbar>
         <div className={classes.grow} />
         <div className={classes.sectionDesktop}>
-          {props.location.pathname === 'indivTable' && (
+          {/* {props.location.pathname === 'indivTable' && (
             <IconButton color="primary" aria-label="add">
               <SaveIcon style={{ color: '#FFE66D' }} />
             </IconButton>
@@ -62,6 +63,18 @@ function Footer(props) {
           </IconButton>
           <IconButton color="primary" aria-label="remove">
             <DeleteIcon style={{ color: 'red' }} />
+					</IconButton> */}
+          <IconButton color="primary" aria-label="announcement">
+            <AnnouncementIcon
+              style={{ color: 'white' }}
+              onClick={() =>
+                window.open(
+                  'https://qlstico.io',
+                  '_blank',
+                  'nodeIntegration=no'
+                )
+              }
+            />
           </IconButton>
         </div>
       </Toolbar>

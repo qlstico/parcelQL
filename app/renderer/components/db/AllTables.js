@@ -214,10 +214,10 @@ const AllTables = props => {
 
   return (
     <div className="content">
-      <h1>GraphQL Tools: </h1>
+      <h1 style={{ padding: '5px' }}>GraphQL Tools: </h1>
       <GraphQLDisplayCard />
       <VoyagerDisplayCard />
-      <h1>Tables: </h1>
+      <h1 style={{ padding: '5px' }}>Tables: </h1>
       <Button
         edge="end"
         aria-label="create db"
