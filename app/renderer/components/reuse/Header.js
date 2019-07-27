@@ -101,11 +101,7 @@ function PrimarySearchAppBar(props) {
 
   return (
     <div className={classes.grow}>
-      <AppBar
-        position="fixed"
-        id="menuBar"
-        style={{ background: '#753689', top: '0' }}
-      >
+      <AppBar position="fixed" id="menuBar" style={{ background: '#753689' }}>
         <Toolbar>
           <Button
             style={{ backgroundColor: 'transparent' }}

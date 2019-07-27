@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   card: {
-    height: 150,
+    height: 120,
     width: 1000
   },
   pos: {
@@ -104,19 +104,26 @@ const ConnectPage = props => {
     setUserDbConnection(userConfig);
     getAllDbNames();
   };
+
+  // Get the navbar
+
   return (
     <div className="content">
-      <h1>
-        Connect:{' '}
-        <Button
+      <h1 style={{ padding: '15px' }}>
+        Connections:
+        {/* <Button
           onClick={() => props.history.push('/createConnection')}
           size="large"
           align-self="right"
         >
           Create Connection
-        </Button>
+        </Button> */}
       </h1>
-      <Grid container className={classes.root} spacing={3}>
+      <Grid
+        container
+        className={`${classes.root} connections-grid`}
+        spacing={3}
+      >
         <Grid item xs={12}>
           <Grid container justify="space-between" spacing={spacing}>
             {Array.isArray(userConfigs) &&

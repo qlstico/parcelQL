@@ -4,7 +4,8 @@ import Routes from '../Routes';
 import {
   PrimarySearchAppBar,
   RefreshCircle,
-  DbRelatedContext
+  DbRelatedContext,
+  Footer
 } from '../components/';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,6 +17,7 @@ const App = () => {
     <div className={refreshStatus ? 'loading' : ''}>
       <PrimarySearchAppBar />
       {refreshStatus ? <RefreshCircle /> : <Routes />}
+      <Footer />
     </div>
   );
 };
