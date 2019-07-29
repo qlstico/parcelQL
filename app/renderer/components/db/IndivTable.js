@@ -18,6 +18,7 @@ import {
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
+import { fontSize } from '@material-ui/system';
 const { ipcRenderer } = electron;
 const {
   UPDATE_TABLE_DATA,
@@ -40,9 +41,9 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200
+    // marginLeft: theme.spacing(1),
+    // marginRight: theme.spacing(1),
+    width: '100%'
   },
   selectedRow: {
     background: 'grey'
@@ -241,6 +242,27 @@ const IndivTable = () => {
     console.log(changesMade);
   };
 
+  // Get the table header
+  const tableHeader = document.getElementById('table-header');
+
+  // Add the sticky class to the table header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+  function stickyTableHeader() {
+    // Get the offset position of the navbar
+    const sticky = tableHeader.offsetTop;
+    if (window.pageYOffset >= sticky) {
+      tableHeader.classList.add('sticky');
+    } else {
+      tableHeader.classList.remove('sticky');
+    }
+  }
+
+  if (tableHeader) {
+    // When the user scrolls the page, invoke the stickyheader func
+    window.onscroll = function() {
+      stickyTableHeader();
+    };
+  }
+
   return tableMatrix.length ? (
     <div className={`${classes.root} content`}>
       <Paper className={classes.paper}>
@@ -252,11 +274,7 @@ const IndivTable = () => {
               {selectedTableData &&
                 selectedTableData[0] &&
                 Object.keys(selectedTableData[0]).map(key => {
-                  return (
-                    <TableCell key={key} style={{ width: '10px' }}>
-                      {key}
-                    </TableCell>
-                  );
+                  return <TableCell key={key}>{key}</TableCell>;
                 })}
             </TableRow>
           </TableHead>
@@ -279,7 +297,7 @@ const IndivTable = () => {
                         style={{
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
-                          width: 85, //`${Number.isInteger(value) ? 30 : 130}`
+                          // width: 85, //`${Number.isInteger(value) ? 30 : 130}`
                           display: 'block'
                         }}
                       >

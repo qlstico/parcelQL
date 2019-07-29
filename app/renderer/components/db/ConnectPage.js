@@ -111,7 +111,7 @@ const ConnectPage = props => {
   return (
     <div className="content">
       <h1 style={{ padding: '15px' }}>
-        Connections:{' '}
+        Connect:{' '}
         <Button
           onClick={() => props.history.push('/createConnection')}
           edge="end"
