@@ -20,6 +20,7 @@ export {
   notifyError
 } from './reuse/ToastNotifications';
 export { default as RefreshCircle } from './reuse/Refreshing';
+export { default as Footer } from './reuse/Footer';
 
 // // Container folder files
 export { default as Edit } from '../containers/EditExistingConnection';

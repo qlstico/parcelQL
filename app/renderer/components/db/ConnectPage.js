@@ -24,11 +24,12 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   card: {
-    height: 150,
-    width: 1000
+    height: 120,
+    width: '95%',
+    marginLeft: 15
   },
   pos: {
-    marginBottom: 0
+    marginBottom: 5
   }
 }));
 
@@ -104,19 +105,31 @@ const ConnectPage = props => {
     setUserDbConnection(userConfig);
     getAllDbNames();
   };
+
+  // Get the navbar
+
   return (
-    <div>
-      <h1>
+    <div className="content">
+      <h1 style={{ padding: '15px' }}>
         Connect:{' '}
         <Button
           onClick={() => props.history.push('/createConnection')}
-          size="large"
-          align-self="right"
+          edge="end"
+          color="inherit"
+          type="button"
+          text="white"
+          size="small"
+          // style={{ background: 'white' }}
+          // id="menuButton"
         >
           Create Connection
         </Button>
       </h1>
-      <Grid container className={classes.root} spacing={3}>
+      <Grid
+        container
+        className={`${classes.root} connections-grid`}
+        spacing={3}
+      >
         <Grid item xs={12}>
           <Grid container justify="space-between" spacing={spacing}>
             {Array.isArray(userConfigs) &&
@@ -139,7 +152,12 @@ const ConnectPage = props => {
                     </Typography>
                     <Button
                       onClick={() => handleConnect(connection)}
-                      size="large"
+                      edge="end"
+                      color="inherit"
+                      type="button"
+                      text="white"
+                      size="small"
+                      id="menuButton"
                     >
                       Connect
                     </Button>
@@ -148,7 +166,12 @@ const ConnectPage = props => {
                         setSelectedUser(connection);
                         props.history.push('/editConnection');
                       }}
-                      size="large"
+                      edge="end"
+                      color="inherit"
+                      type="button"
+                      text="white"
+                      size="small"
+                      id="menuButton"
                     >
                       Edit
                     </Button>
@@ -156,7 +179,12 @@ const ConnectPage = props => {
                       onClick={() =>
                         removeConnection(connection.id, connection.user)
                       }
-                      size="large"
+                      variant="contained"
+                      type="button"
+                      text="white"
+                      size="small"
+                      style={{ background: '#FF715B' }}
+                      id="menuButton"
                     >
                       Remove
                     </Button>
