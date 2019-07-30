@@ -1,6 +1,7 @@
 const { format } = require('url');
 const { encrypt } = require('../server/util');
 const { BrowserWindow, app, ipcMain, Menu, MenuItem } = require('electron');
+import prompt from 'electron-prompt';
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
 const path = require('path');
@@ -49,6 +50,7 @@ const {
   REFRESH_REPLY
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
+const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -187,10 +189,20 @@ ipcMain.on(GET_DB_NAMES, async event => {
  * when user clicks database, sends message to trigger creating a db
  * and replies with updated array of all db names after dletion
  */
-ipcMain.on(CREATE_DATABASE, async (event, databaseName) => {
-  const existingDatabases = await createDatabase(databaseName);
+ipcMain.on(CREATE_DATABASE, event => {
+  prompt({
+    title: 'Create New Database',
+    label: 'New Database Name:',
+    icon: iconPath
+  }).then(async input => {
+    if (input === null)
+      event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
+    else {
+      const existingDatabases = await createDatabase(input);
+      event.reply(CREATE_DATABASE_REPLY, existingDatabases);
+    }
+  });
   // reply with database names from query
-  event.reply(CREATE_DATABASE_REPLY, existingDatabases);
 });
 
 /**
@@ -233,9 +245,19 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
  * when the user submits request for a new table
  */
 // args === [selectedDb, newTableName]
-ipcMain.on(CREATE_TABLE, async (event, args) => {
-  const newTableAddition = await createTable(...args);
-  event.reply(CREATE_TABLE_REPLY, newTableAddition);
+ipcMain.on(CREATE_TABLE, async (event, db) => {
+  prompt({
+    title: 'Create New Table',
+    label: 'New Table Name:',
+    icon: iconPath
+  }).then(async input => {
+    if (input === null)
+      event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
+    else {
+      const newTableAddition = await createTable(db, input);
+      event.reply(CREATE_TABLE_REPLY, newTableAddition);
+    }
+  });
 });
 
 /**

@@ -229,7 +229,7 @@ const IndivTable = () => {
   };
 
   // Adding a new row to the GUI grid
-  const addRowToState = keys => {
+  const addRowToState = (keys = Object.keys(selectedTableData[0])) => {
     const row = [];
     const rowId = generateNewRowTempId();
     for (let key of keys) {
@@ -375,7 +375,7 @@ const IndivTable = () => {
         edge="end"
         variant="contained"
         type="button"
-        onClick={() => addRowToState(Object.keys(selectedTableData[0]))}
+        onClick={() => addRowToState()}
         color="inherit"
         id="menuButton"
         size="small"
