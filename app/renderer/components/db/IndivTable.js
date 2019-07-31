@@ -18,7 +18,6 @@ import {
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
-import { fontSize } from '@material-ui/system';
 const { ipcRenderer } = electron;
 const {
   UPDATE_TABLE_DATA,
@@ -41,8 +40,6 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   textField: {
-    // marginLeft: theme.spacing(1),
-    // marginRight: theme.spacing(1),
     width: '100%'
   },
   selectedRow: {
