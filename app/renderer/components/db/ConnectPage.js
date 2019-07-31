@@ -110,21 +110,7 @@ const ConnectPage = props => {
 
   return (
     <div className="content">
-      <h1 style={{ padding: '15px' }}>
-        Connect:{' '}
-        <Button
-          onClick={() => props.history.push('/createConnection')}
-          edge="end"
-          color="inherit"
-          type="button"
-          text="white"
-          size="small"
-          // style={{ background: 'white' }}
-          // id="menuButton"
-        >
-          Create Connection
-        </Button>
-      </h1>
+      <h1 style={{ padding: '15px' }}>Connect:</h1>
       <Grid
         container
         className={`${classes.root} connections-grid`}
