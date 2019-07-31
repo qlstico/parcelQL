@@ -239,7 +239,7 @@ const IndivTable = () => {
     setTableMatrix(prevMatrix => {
       return prevMatrix.concat([row]);
     });
-    console.log(changesMade);
+    notifyAdded(selectedTable, rowId);
   };
 
   // Get the table header

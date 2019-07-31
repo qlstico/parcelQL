@@ -79,7 +79,7 @@ function PrimarySearchAppBar(props) {
         currentComponent,
         [selectedTable, selectedDb]
       ]);
-      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
+      await ipcRenderer.once(REFRESH_REPLY, (_, refreshedData) => {
         setSelectedTableData(refreshedData);
       });
     } else {

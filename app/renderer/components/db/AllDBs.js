@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import {
   DisplayCard,
   DbRelatedContext,
-  notifyAdded,
-  notifyRemoved,
   notifyError,
   RefreshCircle
 } from '../index';
@@ -11,19 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
-import { Button, TextField } from '@material-ui/core/';
 import { withRouter } from 'react-router-dom';
-import Menu from '@material-ui/core/Menu';
-import AddIcon from '@material-ui/icons/Add';
 // For all ipcRenderer funcs
 const {
   GET_TABLE_NAMES,
   GET_TABLE_NAMES_REPLY,
-  CLOSE_SERVER,
-  CREATE_DATABASE,
-  CREATE_DATABASE_REPLY,
-  DELETE_DATABASE,
-  DATABASE_ERROR
+  CLOSE_SERVER
 } = require('../../constants/ipcNames');
 
 // For styling MaterialUI components
@@ -51,7 +42,6 @@ const AllDBs = props => {
     serverStatus,
     setServerStatus,
     allDbNames,
-    setAllDbNames,
     currentlyHighlightedDb,
     setCurrentlyHighlightedDb
   } = useContext(DbRelatedContext);
@@ -88,8 +78,8 @@ const AllDBs = props => {
     if (allDbNames.length) clearTimeout(startTimeout);
   }, [serverStatus, allDbNames]);
 
-  // when user clicks database, sends message to trigger getting the table data
-  // set context with table names
+  // when user double clicks a database, sends message to trigger getting the table data
+  // and set context with table names
   const selectDb = async dbname => {
     setSelectedDb(dbname); // set db name in context
 
@@ -107,6 +97,7 @@ const AllDBs = props => {
         // on successful connection and table names response, set provider state with
         // these table names and allow to move forward to next component.
         setTablesContext(tablesResponse);
+        setCurrentlyHighlightedDb(null);
         props.history.push('/allTables'); // finally push onto the next component
       }
     });

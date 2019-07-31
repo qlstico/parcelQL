@@ -15,6 +15,9 @@ export const DbRelatedProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [refreshStatus, setRefreshStatus] = useState(false);
   const [currentlyHighlightedDb, setCurrentlyHighlightedDb] = useState(null);
+  const [currentlyHighlightedTable, setCurrentlyHighlightedTable] = useState(
+    null
+  );
   return (
     <DbRelatedContext.Provider
       value={{
@@ -41,7 +44,9 @@ export const DbRelatedProvider = ({ children }) => {
         refreshStatus,
         setRefreshStatus,
         currentlyHighlightedDb,
-        setCurrentlyHighlightedDb
+        setCurrentlyHighlightedDb,
+        currentlyHighlightedTable,
+        setCurrentlyHighlightedTable
       }}
     >
       {children}

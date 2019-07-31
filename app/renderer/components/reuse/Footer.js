@@ -17,8 +17,10 @@ import {
 } from '../index';
 const nativeImage = electron.remote.nativeImage;
 const { dialog } = electron.remote;
-const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
-const dbIcon = nativeImage.createFromPath(iconPath);
+const dbIconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
+const tableIconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
+const tableIcon = nativeImage.createFromPath(tableIconPath);
+const dbIcon = nativeImage.createFromPath(dbIconPath);
 const { ipcRenderer } = electron;
 const {
   CREATE_DATABASE,
@@ -62,9 +64,12 @@ function Footer(props) {
     selectedDb,
     selectedTable,
     currentlyHighlightedDb,
-    setCurrentlyHighlightedDb
+    setCurrentlyHighlightedDb,
+    currentlyHighlightedTable,
+    setCurrentlyHighlightedTable
   } = useContext(DbRelatedContext);
 
+  // function for creating a new db using the footer buttons
   const createDb = async () => {
     await ipcRenderer.send(CREATE_DATABASE);
     await ipcRenderer.once(CREATE_DATABASE_REPLY, (event, newDbName) => {
@@ -79,6 +84,7 @@ function Footer(props) {
     });
   };
 
+  // properties for the prompt that appears to confirm deleting a db
   const confirmDeleteDb = {
     type: 'question',
     buttons: ['Yes, I do', 'Cancel'],
@@ -90,6 +96,7 @@ function Footer(props) {
     icon: dbIcon
   };
 
+  // function for deleting db through footer buttons
   const deleteDb = async () => {
     if (currentlyHighlightedDb) {
       await ipcRenderer.send(DELETE_DATABASE, currentlyHighlightedDb);
@@ -107,10 +114,10 @@ function Footer(props) {
     }
   };
 
-  // function for creating table via GUI
+  // function for creating table via footer buttons
   const createNewTable = async () => {
     await ipcRenderer.send(CREATE_TABLE, selectedDb);
-    await ipcRenderer.once(CREATE_TABLE_REPLY, (event, newTableName) => {
+    await ipcRenderer.once(CREATE_TABLE_REPLY, (_, newTableName) => {
       if (typeof newTableName === 'string') {
         if (errorMessage !== newTableName) {
           notifyError(newTableName);
@@ -122,6 +129,41 @@ function Footer(props) {
     });
   };
 
+  // Options for the confirmation box for deleting a table
+  const confirmDeleteTable = {
+    type: 'question',
+    buttons: ['Yes, I do', 'Cancel'],
+    defaultId: 1,
+    title: 'Confirm Deletion',
+    message: `Are you sure you want to delete this table: "${currentlyHighlightedTable}" ?`,
+    detail:
+      'This is a permanent deletion option, all information contained will be lost.',
+    icon: tableIcon
+  };
+
+  // function for deleting the highlighted table from the footer button
+  const deleteTable = async () => {
+    if (currentlyHighlightedTable) {
+      await ipcRenderer.send(DELETE_TABLE, [
+        selectedDb,
+        currentlyHighlightedTable
+      ]);
+      await ipcRenderer.once(DATABASE_ERROR, (_, errorMsg) => {
+        if (typeof errorMsg === 'string' && errorMessage !== errorMsg) {
+          notifyError(errorMsg);
+          return null;
+        }
+        setTables(prevTables =>
+          prevTables.filter(table => table !== currentlyHighlightedTable)
+        );
+        notifyRemoved(selectedDb, currentlyHighlightedTable);
+        setCurrentlyHighlightedTable(null);
+      });
+    }
+  };
+
+  // function that 'routes' the correct function to the add button based on what
+  // component we are currently on
   const add = () => {
     const {
       location: { pathname },
@@ -136,6 +178,8 @@ function Footer(props) {
     }
   };
 
+  // function that 'routes' the current function to the remove button based on what
+  // component we are currently on.
   const remove = () => {
     const {
       location: { pathname }
@@ -146,7 +190,13 @@ function Footer(props) {
           deleteDb(currentlyHighlightedDb);
         }
       });
-    } else if (pathname === '/allTables') return null;
+    } else if (pathname === '/allTables') {
+      dialog.showMessageBox(null, confirmDeleteTable, response => {
+        if (response === 0) {
+          deleteTable(currentlyHighlightedTable);
+        }
+      });
+    }
   };
 
   return (
@@ -170,6 +220,12 @@ function Footer(props) {
             color="primary"
             aria-label="remove"
             onClick={() => remove()}
+            className={
+              currentlyHighlightedDb !== null ||
+              currentlyHighlightedTable !== null
+                ? ''
+                : 'loading'
+            }
           >
             <DeleteIcon style={{ color: 'white' }} />
           </IconButton>
