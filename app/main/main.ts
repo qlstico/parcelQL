@@ -190,18 +190,22 @@ ipcMain.on(GET_DB_NAMES, async event => {
  * and replies with updated array of all db names after dletion
  */
 ipcMain.on(CREATE_DATABASE, async event => {
-  const input = await prompt({
-    title: 'Create New Database',
-    label: 'New Database Name:',
-    icon: iconPath,
-  });
-  if (input === null)
-    event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
-  else {
-    const existingDatabases = await createDatabase(input);
-    event.reply(CREATE_DATABASE_REPLY, existingDatabases);
+  try {
+    const input = await prompt({
+      title: 'Create New Database',
+      label: 'New Database Name:',
+      icon: iconPath,
+    });
+    if (input === null)
+      event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
+    else {
+      const existingDatabases = await createDatabase(input);
+      event.reply(CREATE_DATABASE_REPLY, existingDatabases);
+    }
+    // reply with database names from query
+  } catch (error) {
+    console.error(error);
   }
-  // reply with database names from query
 });
 
 /**
@@ -245,17 +249,20 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
  */
 // args === [selectedDb, newTableName]
 ipcMain.on(CREATE_TABLE, async (event, db) => {
-  const input = await prompt({
-    title: 'Create New Table',
-    label: 'New Table Name:',
-    icon: iconPath,
-  });
-
-  if (input === null)
-    event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
-  else {
-    const newTableAddition = await createTable(db, input);
-    event.reply(CREATE_TABLE_REPLY, newTableAddition);
+  try {
+    const input = await prompt({
+      title: 'Create New Table',
+      label: 'New Table Name:',
+      icon: iconPath,
+    });
+    if (input === null)
+      event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
+    else {
+      const newTableAddition = await createTable(db, input);
+      event.reply(CREATE_TABLE_REPLY, newTableAddition);
+    }
+  } catch (error) {
+    console.error(error);
   }
 });
 
