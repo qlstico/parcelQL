@@ -17,7 +17,7 @@ const {
   deleteTable,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase
+  deleteDatabase,
 } = require('../db/db');
 const express = require('express');
 const { postgraphile } = require('postgraphile');
@@ -47,7 +47,7 @@ const {
   DELETE_DATABASE_REPLY,
   DATABASE_ERROR,
   REFRESH,
-  REFRESH_REPLY
+  REFRESH_REPLY,
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
@@ -63,7 +63,7 @@ let LOGGEDIN_USER_CONFIG = {
   password: '',
   host: 'localhost',
   port: 5432,
-  ssl: false
+  ssl: false,
 };
 
 // !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
@@ -85,7 +85,7 @@ function setupExpress() {
     watchPg: true,
     graphiql: true,
     enhanceGraphiql: true,
-    handleErrors: true
+    handleErrors: true,
   };
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
@@ -110,8 +110,8 @@ app.on('ready', async () => {
     height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -134,7 +134,7 @@ app.on('ready', async () => {
   const prodPath = format({
     pathname: resolve('app/renderer/.parcel/production/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   });
   const url = isDev ? devPath : prodPath;
 
@@ -189,19 +189,18 @@ ipcMain.on(GET_DB_NAMES, async event => {
  * when user clicks database, sends message to trigger creating a db
  * and replies with updated array of all db names after dletion
  */
-ipcMain.on(CREATE_DATABASE, event => {
-  prompt({
+ipcMain.on(CREATE_DATABASE, async event => {
+  const input = await prompt({
     title: 'Create New Database',
     label: 'New Database Name:',
-    icon: iconPath
-  }).then(async input => {
-    if (input === null)
-      event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
-    else {
-      const existingDatabases = await createDatabase(input);
-      event.reply(CREATE_DATABASE_REPLY, existingDatabases);
-    }
+    icon: iconPath,
   });
+  if (input === null)
+    event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
+  else {
+    const existingDatabases = await createDatabase(input);
+    event.reply(CREATE_DATABASE_REPLY, existingDatabases);
+  }
   // reply with database names from query
 });
 
@@ -246,18 +245,18 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
  */
 // args === [selectedDb, newTableName]
 ipcMain.on(CREATE_TABLE, async (event, db) => {
-  prompt({
+  const input = await prompt({
     title: 'Create New Table',
     label: 'New Table Name:',
-    icon: iconPath
-  }).then(async input => {
-    if (input === null)
-      event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
-    else {
-      const newTableAddition = await createTable(db, input);
-      event.reply(CREATE_TABLE_REPLY, newTableAddition);
-    }
+    icon: iconPath,
   });
+
+  if (input === null)
+    event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
+  else {
+    const newTableAddition = await createTable(db, input);
+    event.reply(CREATE_TABLE_REPLY, newTableAddition);
+  }
 });
 
 /**
