@@ -18,7 +18,6 @@ import {
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
-import { fontSize } from '@material-ui/system';
 const { ipcRenderer } = electron;
 const {
   UPDATE_TABLE_DATA,
@@ -41,8 +40,6 @@ const useStyles = makeStyles(theme => ({
     minWidth: 650
   },
   textField: {
-    // marginLeft: theme.spacing(1),
-    // marginRight: theme.spacing(1),
     width: '100%'
   },
   selectedRow: {
@@ -229,7 +226,7 @@ const IndivTable = () => {
   };
 
   // Adding a new row to the GUI grid
-  const addRowToState = keys => {
+  const addRowToState = (keys = Object.keys(selectedTableData[0])) => {
     const row = [];
     const rowId = generateNewRowTempId();
     for (let key of keys) {
@@ -239,29 +236,29 @@ const IndivTable = () => {
     setTableMatrix(prevMatrix => {
       return prevMatrix.concat([row]);
     });
-    console.log(changesMade);
+    notifyAdded(selectedTable, rowId);
   };
 
   // Get the table header
-  const tableHeader = document.getElementById('table-header');
+  // const tableHeader = document.getElementById('table-header');
 
-  // Add the sticky class to the table header when you reach its scroll position. Remove "sticky" when you leave the scroll position
-  function stickyTableHeader() {
-    // Get the offset position of the navbar
-    const sticky = tableHeader.offsetTop;
-    if (window.pageYOffset >= sticky) {
-      tableHeader.classList.add('sticky');
-    } else {
-      tableHeader.classList.remove('sticky');
-    }
-  }
+  // // Add the sticky class to the table header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+  // function stickyTableHeader() {
+  //   // Get the offset position of the navbar
+  //   const sticky = tableHeader.offsetTop;
+  //   if (window.pageYOffset >= sticky) {
+  //     tableHeader.classList.add('sticky');
+  //   } else {
+  //     tableHeader.classList.remove('sticky');
+  //   }
+  // }
 
-  if (tableHeader) {
-    // When the user scrolls the page, invoke the stickyheader func
-    window.onscroll = function() {
-      stickyTableHeader();
-    };
-  }
+  // if (tableHeader) {
+  //   // When the user scrolls the page, invoke the stickyheader func
+  //   window.onscroll = function() {
+  //     stickyTableHeader();
+  //   };
+  // }
 
   return tableMatrix.length ? (
     <div className={`${classes.root} content`}>
@@ -375,7 +372,7 @@ const IndivTable = () => {
         edge="end"
         variant="contained"
         type="button"
-        onClick={() => addRowToState(Object.keys(selectedTableData[0]))}
+        onClick={() => addRowToState()}
         color="inherit"
         id="menuButton"
         size="small"

@@ -61,7 +61,7 @@ const createDatabase = async databaseName => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`CREATE DATABASE "${databaseName}"`);
-    return null;
+    return [databaseName];
   } catch (error) {
     console.error(error);
     return error.message;
@@ -104,7 +104,7 @@ const createTable = async (selectedDb, newTableName) => {
       "id" SERIAL PRIMARY KEY
       );`
     );
-    return null;
+    return [newTableName];
   } catch (error) {
     console.error(error);
     return error.message;
