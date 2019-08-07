@@ -59,12 +59,9 @@ const IndivTable = () => {
   const classes = useStyles();
 
   // Grabbing the tabledata from the context provider
-  const {
-    selectedTableData,
-    selectedDb,
-    selectedTable,
-    setCurrentComponent
-  } = useContext(DbRelatedContext);
+  const { selectedTableData, selectedDb, selectedTable } = useContext(
+    DbRelatedContext
+  );
 
   // Tracking which row is in 'edit mode'
   const [editRow, setEditRow] = useState(false);
@@ -89,11 +86,11 @@ const IndivTable = () => {
   // before deciding there is nothing to display
   const [loadTimedOut, setLoadTimedOut] = useState(false);
 
+  const [columnHeaders, setColumnHeaders] = useState([]);
+
   // Using this as componentDidMount && componentDidUpdate b/c the provider data from
   // context does not make it in time for the initial mounting
   useEffect(() => {
-    setCurrentComponent('indivtable');
-
     // If the requested data comes back empty, start a timer to render a loading screen
     // and if the elapsed amount of time is passed, we render a message that this data view
     // is empty
@@ -109,17 +106,30 @@ const IndivTable = () => {
     // Creating a 2-d matrix of the selectedTableData from provider in order to
     // represent each object in the selectedTableData array as a row, and each of the
     // values in the 'row obj' as a cell
-    const matrix = selectedTableData.map(row =>
-      // Passing in row id and val as obj to reference inside of
-      // handleInputChange and to reference as an attribute inside component
-      // Object.values(row).map(value => ({ value, id: row.id }))
-      Object.entries(row).map(([key, value]) => ({ value, id: row.id, key }))
-    );
-    // Setting the matrix created above as the state for the component instead of
-    // just using the context provider directly in order to have a copy we can work with without
-    // affecting the true values represented by the provider. This lets us have
-    // a sandbox to play with any changes without commiting to them until we hit submit.
-    setTableMatrix(matrix);
+    const { rows, fields } = selectedTableData;
+
+    if (rows || fields) {
+      if (rows.length) {
+        const matrix = rows.map(row =>
+          // Passing in row id and val as obj to reference inside of
+          // handleInputChange and to reference as an attribute inside component
+          // Object.values(row).map(value => ({ value, id: row.id }))
+          Object.entries(row).map(([key, value]) => ({
+            value,
+            id: row.id,
+            key
+          }))
+        );
+        // Setting the matrix created above as the state for the component instead of
+        // just using the context provider directly in order to have a copy we can work with without
+        // affecting the true values represented by the provider. This lets us have
+        // a sandbox to play with any changes without commiting to them until we hit submit.
+        setColumnHeaders(Object.keys(rows[0]));
+        setTableMatrix(matrix);
+      } else if (fields.length) {
+        setColumnHeaders(fields.map(field => field.name));
+      }
+    }
 
     if (tableMatrix.length) clearTimeout(startTimeout);
 
@@ -219,22 +229,32 @@ const IndivTable = () => {
     setSelectedRow(dbEntryId);
   };
 
-  // For front-end use only to generate random temporary id to create and interact
+  // For front-end use to generate a valid id to create and interact
   // with newly user created rows on grid before submitting for creation.
-  const generateNewRowTempId = (min = 0, max = 99999) => {
-    return `temp${Math.floor(Math.random() * (max - min + 1)) + min}`;
+  const generateNewRowTempId = () => {
+    // Essentially just grabbing the last entry in the matrix's ID (logically assuming
+    // the last entry is sequentially the largest ID value) and adding one to it to
+    // ensure new rows are sequentially next in line based on existing data
+    if (tableMatrix.length) {
+      return tableMatrix[tableMatrix.length - 1][0].id + 1;
+    }
+    // if table is empty, assign an ID of one as first entry
+    return 1;
   };
 
   // Adding a new row to the GUI grid
-  const addRowToState = (keys = Object.keys(selectedTableData[0])) => {
+  const addRowToState = () => {
     const row = [];
     const rowId = generateNewRowTempId();
-    for (let key of keys) {
-      const cell = { id: rowId, key, value: null };
+    for (let header of columnHeaders) {
+      const cell = { id: rowId, header, value: header === 'id' ? rowId : null };
       row.push(cell);
     }
     setTableMatrix(prevMatrix => {
       return prevMatrix.concat([row]);
+    });
+    setChangesMade(prevChanges => {
+      return prevChanges.concat(row);
     });
     notifyAdded(selectedTable, rowId);
   };
@@ -259,8 +279,7 @@ const IndivTable = () => {
   //     stickyTableHeader();
   //   };
   // }
-
-  return tableMatrix.length ? (
+  return tableMatrix.length || columnHeaders.length ? (
     <div className={`${classes.root} content`}>
       <Paper className={classes.paper}>
         <Table className={classes.table} size="small">
@@ -268,11 +287,9 @@ const IndivTable = () => {
             <TableRow>
               {/* Column Headers */}
               {/* check if there is data, check if array has nested obj, then render */}
-              {selectedTableData &&
-                selectedTableData[0] &&
-                Object.keys(selectedTableData[0]).map(key => {
-                  return <TableCell key={key}>{key}</TableCell>;
-                })}
+              {columnHeaders.map(header => {
+                return <TableCell key={header}>{header}</TableCell>;
+              })}
             </TableRow>
           </TableHead>
           <TableBody>

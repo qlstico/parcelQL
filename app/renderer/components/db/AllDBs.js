@@ -107,9 +107,9 @@ const AllDBs = props => {
     <div className="content">
       <h1 style={{ padding: '15px' }}>Databases: </h1>
 
-      <Grid container className={classes.root} spacing={3}>
+      <Grid container className={classes.root}>
         <Grid item xs={12}>
-          <Grid container justify="center" spacing={spacing}>
+          <Grid container justify="start" spacing={spacing}>
             {allDbNames ? (
               allDbNames.map(db => (
                 <Grid

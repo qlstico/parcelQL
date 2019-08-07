@@ -28,7 +28,6 @@ const setUserProvidedDbConnection = userConnection => {
 
 const getAllDbs = async () => {
   const { database } = DB_CONNECTION;
-
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     // If user config specified a specifc DB to connect to, we don't need to worry
@@ -69,6 +68,7 @@ const createDatabase = async databaseName => {
 };
 
 const deleteDatabase = async databaseName => {
+  setDatabase('');
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`DROP DATABASE "${databaseName}"`);
@@ -119,6 +119,7 @@ const deleteTable = async (selectedDb, selectedTableName) => {
     return null;
   } catch (error) {
     console.error(error);
+    return error.message;
   }
 };
 
@@ -127,9 +128,11 @@ const getTableData = async (table, database) => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     const response = await pool.query(`SELECT * from "${table}"`);
-    return response.rows;
+    console.log(response.fields);
+    return response;
   } catch (error) {
     console.error(error);
+    return error.message;
   }
 };
 

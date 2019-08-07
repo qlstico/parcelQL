@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,7 +9,7 @@ import Refresh from '@material-ui/icons/Refresh';
 import BreadcrumbsElem from './Breadcrumbs';
 import logoImg from '../../../assets/images/QLSticoV3.png';
 import { Button } from '@material-ui/core/';
-import { DbRelatedContext } from '../index';
+import { DbRelatedContext, notifyError } from '../index';
 const { REFRESH, REFRESH_REPLY } = require('../../constants/ipcNames');
 import { electron } from '../../utils/electronImports';
 const { ipcRenderer } = electron;
@@ -61,26 +61,46 @@ function PrimarySearchAppBar(props) {
     setRefreshStatus
   } = useContext(DbRelatedContext);
 
-  const refreshPage = async () => {
-    const { location } = props;
+  // Error State
+  const [errorMessage, setErrorMessage] = useState(null);
 
-    if (location === '/allDBs') {
-      await ipcRenderer.send(REFRESH, [currentComponent, currentUser]);
-      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
-        setAllDbNames(refreshedData);
-      });
-    } else if (location === '/allTables') {
-      await ipcRenderer.send(REFRESH, [currentComponent, selectedDb]);
-      await ipcRenderer.once(REFRESH_REPLY, (event, refreshedData) => {
-        setTables(refreshedData);
-      });
-    } else if (location === '/indivTable') {
-      await ipcRenderer.send(REFRESH, [
-        currentComponent,
-        [selectedTable, selectedDb]
-      ]);
+  const refreshPage = async () => {
+    const {
+      location: { pathname }
+    } = props;
+
+    if (pathname === '/allDBs') {
+      await ipcRenderer.send(REFRESH, [pathname, currentUser]);
       await ipcRenderer.once(REFRESH_REPLY, (_, refreshedData) => {
-        setSelectedTableData(refreshedData);
+        if (typeof refreshedData === 'string') {
+          if (errorMessage !== refreshedData) {
+            notifyError(refreshedData);
+          }
+        } else {
+          setAllDbNames(refreshedData);
+        }
+      });
+    } else if (pathname === '/allTables') {
+      await ipcRenderer.send(REFRESH, [pathname, selectedDb]);
+      await ipcRenderer.once(REFRESH_REPLY, (_, refreshedData) => {
+        if (typeof refreshedData === 'string') {
+          if (errorMessage !== refreshedData) {
+            notifyError(refreshedData);
+          }
+        } else {
+          setTables(refreshedData);
+        }
+      });
+    } else if (pathname === '/indivTable') {
+      await ipcRenderer.send(REFRESH, [pathname, [selectedTable, selectedDb]]);
+      await ipcRenderer.once(REFRESH_REPLY, (_, refreshedData) => {
+        if (typeof refreshedData === 'string') {
+          if (errorMessage !== refreshedData) {
+            notifyError(refreshedData);
+          }
+        } else {
+          setSelectedTableData(refreshedData);
+        }
       });
     } else {
       return;
