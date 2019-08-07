@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 const AllTables = props => {
   // FOr styling:
   const classes = useStyles();
-  const [spacing] = useState(2);
+  const [spacing] = useState(0);
 
   // Error State
   const [errorMessage, setErrorMessage] = useState(null);
@@ -65,10 +65,16 @@ const AllTables = props => {
     setCurrentTable(table);
     await ipcRenderer.send(GET_TABLE_CONTENTS, [table, selectedDb]);
     await ipcRenderer.once(GET_TABLE_CONTENTS_REPLY, (event, tableData) => {
-      setSelectedTableData(tableData);
+      if (typeof tableData === 'string') {
+        if (errorMessage !== tableData) {
+          notifyError(tableData);
+        }
+      } else {
+        setSelectedTableData(tableData);
+        setCurrentlyHighlightedTable(null);
+        props.history.push('/indivTable');
+      }
     });
-    setCurrentlyHighlightedTable(null);
-    props.history.push('/indivTable');
   };
 
   // Allows a pseudo loading screen for a predetermined amount of time to allow
@@ -105,9 +111,9 @@ const AllTables = props => {
       <GraphQLDisplayCard />
       <VoyagerDisplayCard />
       <h1 style={{ padding: '5px' }}>Tables: </h1>
-      <Grid container className={classes.root} spacing={3}>
-        <Grid item xs={12}>
-          <Grid container justify="center" spacing={spacing}>
+      <Grid container className={classes.root}>
+        <Grid item xs={15}>
+          <Grid container justify="flex-start" spacing={spacing}>
             {tablesContext.length ? (
               tablesContext.map(table => (
                 <Grid

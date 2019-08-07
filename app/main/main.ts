@@ -17,7 +17,7 @@ const {
   deleteTable,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase,
+  deleteDatabase
 } = require('../db/db');
 const express = require('express');
 const { postgraphile } = require('postgraphile');
@@ -47,7 +47,7 @@ const {
   DELETE_DATABASE_REPLY,
   DATABASE_ERROR,
   REFRESH,
-  REFRESH_REPLY,
+  REFRESH_REPLY
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
@@ -63,7 +63,7 @@ let LOGGEDIN_USER_CONFIG = {
   password: '',
   host: 'localhost',
   port: 5432,
-  ssl: false,
+  ssl: false
 };
 
 // !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
@@ -86,6 +86,7 @@ function setupExpress() {
     graphiql: true,
     enhanceGraphiql: true,
     handleErrors: true,
+    retryOnInitFail: false
   };
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
@@ -110,8 +111,8 @@ app.on('ready', async () => {
     height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: true,
-    },
+      nodeIntegration: true
+    }
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -134,7 +135,7 @@ app.on('ready', async () => {
   const prodPath = format({
     pathname: resolve('app/renderer/.parcel/production/index.html'),
     protocol: 'file:',
-    slashes: true,
+    slashes: true
   });
   const url = isDev ? devPath : prodPath;
 
@@ -194,7 +195,7 @@ ipcMain.on(CREATE_DATABASE, async event => {
     const input = await prompt({
       title: 'Create New Database',
       label: 'New Database Name:',
-      icon: iconPath,
+      icon: iconPath
     });
     if (input === null)
       event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
@@ -224,11 +225,12 @@ ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
  * call to get all the table names and replies with the tableNames
  */
 ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
-  // KICKS ON EXPRESS SERVER TO SERVICE GRAPHQL REQUESTS
   LOGGEDIN_USER_CONFIG.database = dbname;
-  setupExpress();
   const tableNames = await getAllTables(dbname);
   event.reply(GET_TABLE_NAMES_REPLY, tableNames);
+  // KICKS ON EXPRESS SERVER TO SERVICE GRAPHQL REQUESTS ONLY IF PSQL CLIENT RESPONDS
+  // WITHOUT AN ERROR MESSAGE
+  if (typeof tableNames === 'object') setupExpress();
 });
 
 //======================== A L L  T A B L E S ===============================//
@@ -253,7 +255,7 @@ ipcMain.on(CREATE_TABLE, async (event, db) => {
     const input = await prompt({
       title: 'Create New Table',
       label: 'New Table Name:',
-      icon: iconPath,
+      icon: iconPath
     });
     if (input === null)
       event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
@@ -309,19 +311,19 @@ ipcMain.on(CLOSE_SERVER, async (event, args) => {
 });
 
 /**Called from ./components/reuse/Header.js on refresh button
- * args === [currentComponent (component that is requesting a refresh), any other args
+ * args === [pathname (component that is requesting a refresh), any other args
  * necessary to make the backend requests for that component to successfully refresh]
  */
 ipcMain.on(REFRESH, async (event, args) => {
-  const currentComponent = args[0];
+  const pathname = args[0];
   const refreshArgs = args[1];
-  if (currentComponent === 'alldbs') {
+  if (pathname === '/allDBs') {
     const dbNames = await getAllDbs();
     event.reply(REFRESH_REPLY, dbNames);
-  } else if (currentComponent === 'alltables') {
+  } else if (pathname === '/allTables') {
     const tableNames = await getAllTables(refreshArgs);
     event.reply(REFRESH_REPLY, tableNames);
-  } else if (currentComponent === 'indivtable') {
+  } else if (pathname === '/indivTable') {
     const tableData = await getTableData(...refreshArgs);
     event.reply(REFRESH_REPLY, tableData);
   } else {
