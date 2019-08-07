@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%'
   },
   paper: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
     width: '100%',
     overflowX: 'auto',
     marginBottom: theme.spacing(2)
@@ -292,6 +292,7 @@ const IndivTable = () => {
   return tableMatrix.length || columnHeaders.length ? (
     <div className={`${classes.root} content`}>
       <FormControlLabel
+        style={{ padding: '5px' }}
         control={
           <Checkbox
             name="fieldTypes"
