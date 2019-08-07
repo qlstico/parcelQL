@@ -14,7 +14,8 @@ import {
   notifyError,
   notifyRemoved,
   notifyAdded,
-  RefreshCircle
+  RefreshCircle,
+  DataTypes
 } from '../index';
 import TextField from '@material-ui/core/TextField';
 import { electron } from '../../utils/electronImports';
@@ -282,6 +283,7 @@ const IndivTable = () => {
   return tableMatrix.length || columnHeaders.length ? (
     <div className={`${classes.root} content`}>
       <Paper className={classes.paper}>
+        <DataTypes fields={selectedTableData.fields} />
         <Table className={classes.table} size="small">
           <TableHead>
             <TableRow>

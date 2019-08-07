@@ -6,6 +6,7 @@ export { default as ConnectPage } from './db/ConnectPage';
 export { default as AllTables } from './db/AllTables';
 export { default as IndivTable } from './db/IndivTable';
 export { default as AllDBs } from './db/AllDBs';
+export { default as DataTypes } from './db/DataTypes';
 
 // // Reuse folder files
 export { default as Header } from './reuse/Header';

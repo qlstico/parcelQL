@@ -109,7 +109,7 @@ const AllDBs = props => {
 
       <Grid container className={classes.root}>
         <Grid item xs={12}>
-          <Grid container justify="start" spacing={spacing}>
+          <Grid container justify="flex-start" spacing={spacing}>
             {allDbNames ? (
               allDbNames.map(db => (
                 <Grid

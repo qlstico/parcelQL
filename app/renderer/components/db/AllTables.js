@@ -111,9 +111,9 @@ const AllTables = props => {
       <GraphQLDisplayCard />
       <VoyagerDisplayCard />
       <h1 style={{ padding: '5px' }}>Tables: </h1>
-      <Grid container className={classes.root} justify="start">
+      <Grid container className={classes.root}>
         <Grid item xs={15}>
-          <Grid container justify="start" spacing={spacing}>
+          <Grid container justify="flex-start" spacing={spacing}>
             {tablesContext.length ? (
               tablesContext.map(table => (
                 <Grid
