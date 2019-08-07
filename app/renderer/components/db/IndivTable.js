@@ -9,6 +9,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {
   DbRelatedContext,
   notifyError,
@@ -280,136 +282,164 @@ const IndivTable = () => {
   //     stickyTableHeader();
   //   };
   // }
+  const [fieldTypeTable, enableFieldTypeTable] = useState(false);
+
+  const handleCheckboxChange = e => {
+    const { name, checked } = e.target;
+    enableFieldTypeTable(!fieldTypeTable);
+  };
+
   return tableMatrix.length || columnHeaders.length ? (
     <div className={`${classes.root} content`}>
-      <Paper className={classes.paper}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            name="fieldTypes"
+            checked={fieldTypeTable}
+            onChange={handleCheckboxChange}
+            value={fieldTypeTable}
+            color="primary"
+          />
+        }
+        label="View Field Types"
+      />
+      {fieldTypeTable ? (
         <DataTypes fields={selectedTableData.fields} />
-        <Table className={classes.table} size="small">
-          <TableHead>
-            <TableRow>
-              {/* Column Headers */}
-              {/* check if there is data, check if array has nested obj, then render */}
-              {columnHeaders.map(header => {
-                return <TableCell key={header}>{header}</TableCell>;
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* Table Rows Data */}
-            {tableMatrix.map((row, rowIdx) => (
-              <TableRow key={rowIdx}>
-                {/* Rows cell data */}
-                {row.map(({ value, id, key }, colIdx) =>
-                  // Checks to see if this row is the editable row, if it is render cells as
-                  // textField, else render as a normal read only cells.
-                  editRow === id ? (
-                    <TableCell
-                      key={`${rowIdx}-${colIdx}`}
-                      component="th"
-                      scope="row"
-                      className={classes.editRow}
-                    >
-                      <span
-                        style={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          // width: 85, //`${Number.isInteger(value) ? 30 : 130}`
-                          display: 'block'
-                        }}
-                      >
-                        <TextField
-                          className={classes.textField}
-                          type="text"
-                          defaultValue={value}
-                          // Name field is how we reference this cell's equivalent
-                          // position in the state matrix to make changes
-                          name={`${rowIdx}-${colIdx}`}
-                          onChange={e => handleInputChange(e, rowIdx, id, key)}
-                        />
-                      </span>
-                    </TableCell>
-                  ) : (
-                    <TableCell
-                      key={`${rowIdx}-${colIdx}`}
-                      component="th"
-                      scope="row"
-                      className={
-                        selectedRow === id
-                          ? classes.selectedRow
-                          : changesMade.some(
-                              changes =>
-                                changes['id'] === id && changes['key'] === key
-                            )
-                          ? classes.changesLogged
-                          : null
-                      }
-                      // Set this row to be the selected row for 'edit mode' in
-                      // the state to rerender as a textField.
-                      onDoubleClick={() => enableEditRow(id)}
-                      // If this is not an 'edit mode' row, clicking on it will
-                      // remove 'edit mode'
-                      onClick={() => {
-                        enableSelectedRow(id);
-                        removeEditRow();
-                      }}
-                      name={`${rowIdx}-${colIdx}`}
-                    >
-                      {value && value.length > 20 ? (
-                        <span
-                          style={{
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            width: '150px',
-                            display: 'block'
-                          }}
-                        >{`${value}...`}</span> //styling so that the cells dont display massive amounts of text by default
+      ) : (
+        <>
+          <Paper className={classes.paper}>
+            <Table className={classes.table} size="small">
+              <TableHead>
+                <TableRow>
+                  {/* Column Headers */}
+                  {/* check if there is data, check if array has nested obj, then render */}
+                  {columnHeaders.map(header => {
+                    return <TableCell key={header}>{header}</TableCell>;
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* Table Rows Data */}
+                {tableMatrix.map((row, rowIdx) => (
+                  <TableRow key={rowIdx}>
+                    {/* Rows cell data */}
+                    {row.map(({ value, id, key }, colIdx) =>
+                      // Checks to see if this row is the editable row, if it is render cells as
+                      // textField, else render as a normal read only cells.
+                      editRow === id ? (
+                        <TableCell
+                          key={`${rowIdx}-${colIdx}`}
+                          component="th"
+                          scope="row"
+                          className={classes.editRow}
+                        >
+                          <span
+                            style={{
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              // width: 85, //`${Number.isInteger(value) ? 30 : 130}`
+                              display: 'block'
+                            }}
+                          >
+                            <TextField
+                              className={classes.textField}
+                              type="text"
+                              defaultValue={value}
+                              // Name field is how we reference this cell's equivalent
+                              // position in the state matrix to make changes
+                              name={`${rowIdx}-${colIdx}`}
+                              onChange={e =>
+                                handleInputChange(e, rowIdx, id, key)
+                              }
+                            />
+                          </span>
+                        </TableCell>
                       ) : (
-                        `${value}`
-                      )}
-                    </TableCell>
-                  )
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
-
-      <Button
-        edge="end"
-        variant="contained"
-        type="button"
-        onClick={handleUpdateSubmit}
-        color="inherit"
-        id="menuButton"
-        size="small"
-        style={changesMade.length ? { background: '#FFE66D' } : {}}
-      >
-        Submit
-      </Button>
-      <Button
-        edge="end"
-        variant="contained"
-        type="button"
-        onClick={() => addRowToState()}
-        color="inherit"
-        id="menuButton"
-        size="small"
-      >
-        Add Row
-      </Button>
-      {selectedRow && (
-        <Button
-          variant="contained"
-          type="button"
-          text="white"
-          size="small"
-          style={{ background: '#FF715B' }}
-          onClick={handleRemoveRow}
-          id="menuButton"
-        >
-          Remove Row
-        </Button>
+                        <TableCell
+                          key={`${rowIdx}-${colIdx}`}
+                          component="th"
+                          scope="row"
+                          className={
+                            selectedRow === id
+                              ? classes.selectedRow
+                              : changesMade.some(
+                                  changes =>
+                                    changes['id'] === id &&
+                                    changes['key'] === key
+                                )
+                              ? classes.changesLogged
+                              : null
+                          }
+                          // Set this row to be the selected row for 'edit mode' in
+                          // the state to rerender as a textField.
+                          onDoubleClick={() => enableEditRow(id)}
+                          // If this is not an 'edit mode' row, clicking on it will
+                          // remove 'edit mode'
+                          onClick={() => {
+                            enableSelectedRow(id);
+                            removeEditRow();
+                          }}
+                          name={`${rowIdx}-${colIdx}`}
+                        >
+                          {value && value.length > 20 ? (
+                            <span
+                              style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                width: '150px',
+                                display: 'block'
+                              }}
+                            >{`${value}...`}</span> //styling so that the cells dont display massive amounts of text by default
+                          ) : (
+                            `${value}`
+                          )}
+                        </TableCell>
+                      )
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+          <div>
+            <Button
+              edge="end"
+              variant="contained"
+              type="button"
+              onClick={handleUpdateSubmit}
+              color="inherit"
+              id="menuButton"
+              size="small"
+              style={changesMade.length ? { background: '#FFE66D' } : {}}
+            >
+              Submit
+            </Button>
+            <Button
+              edge="end"
+              variant="contained"
+              type="button"
+              onClick={() => addRowToState()}
+              color="inherit"
+              id="menuButton"
+              size="small"
+            >
+              Add Row
+            </Button>
+            {selectedRow && (
+              <Button
+                variant="contained"
+                type="button"
+                text="white"
+                size="small"
+                style={{ background: '#FF715B' }}
+                onClick={handleRemoveRow}
+                id="menuButton"
+              >
+                Remove Row
+              </Button>
+            )}
+          </div>
+        </>
       )}
     </div>
   ) : loadTimedOut === true ? (
