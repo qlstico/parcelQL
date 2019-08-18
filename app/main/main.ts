@@ -4,8 +4,6 @@ const { BrowserWindow, app, ipcMain, Menu, MenuItem } = require('electron');
 import prompt from 'electron-prompt';
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
-const path = require('path');
-const url = require('url');
 const os = require('os');
 const {
   getAllDbs,
@@ -17,7 +15,7 @@ const {
   deleteTable,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase
+  deleteDatabase,
 } = require('../db/db');
 const express = require('express');
 const { postgraphile } = require('postgraphile');
@@ -47,23 +45,40 @@ const {
   DELETE_DATABASE_REPLY,
   DATABASE_ERROR,
   REFRESH,
-  REFRESH_REPLY
+  REFRESH_REPLY,
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
+
+interface UserConfig {
+  user: string;
+  database: string;
+  password: string;
+  host: string;
+  port: number;
+  ssl: boolean;
+}
+
+interface PostGraphileConfig {
+  watchPg: boolean;
+  graphiql: boolean;
+  enhanceGraphiql: boolean;
+  handleErrors: boolean;
+  retryOnInitFail: boolean;
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let expressApp;
 let expressServer;
-let LOGGEDIN_USER_CONFIG = {
+let LOGGEDIN_USER_CONFIG: UserConfig = {
   user: '',
   database: '',
   password: '',
   host: 'localhost',
   port: 5432,
-  ssl: false
+  ssl: false,
 };
 
 // !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
@@ -81,12 +96,12 @@ function setupExpress() {
     password,
     'decrypt'
   )}@${host}:${port}/${database}${ssl === true ? '?ssl=true' : ''}`;
-  const pglConfig = {
+  const pglConfig: PostGraphileConfig = {
     watchPg: true,
     graphiql: true,
     enhanceGraphiql: true,
     handleErrors: true,
-    retryOnInitFail: false
+    retryOnInitFail: false,
   };
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
@@ -111,8 +126,8 @@ app.on('ready', async () => {
     height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -135,7 +150,7 @@ app.on('ready', async () => {
   const prodPath = format({
     pathname: resolve('app/renderer/.parcel/production/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   });
   const url = isDev ? devPath : prodPath;
 
@@ -155,7 +170,7 @@ app.on('window-all-closed', app.quit);
  * user field with the current OS user's name to help standardize an easy local
  * connection
  */
-ipcMain.on(GET_OS_USER, event => {
+ipcMain.on(GET_OS_USER, (event: any) => {
   const { username } = os.userInfo();
   event.reply(GET_OS_USER_REPLY, username);
 });
@@ -165,7 +180,7 @@ ipcMain.on(GET_OS_USER, event => {
  * called from ./components/db/ConnectPage.js
  * when the user submits request for login with a specific connection tile
  */
-ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
+ipcMain.on(SET_USER_DB_CONNECTION, async (_: any, userConfig: UserConfig) => {
   // Setting to local global config var in order to have access to it for spinning
   // up GraphQL server, especially for non-localhost connections, if/when user finally clicks into
   // a DB table.
@@ -178,7 +193,7 @@ ipcMain.on(SET_USER_DB_CONNECTION, async (_, userConfig) => {
  * called from ./components/db/ConnectPage.js
  * called to get all the db names and replies with the database names
  */
-ipcMain.on(GET_DB_NAMES, async event => {
+ipcMain.on(GET_DB_NAMES, async (event: any) => {
   const dbNames = await getAllDbs();
   // reply with database names from query, or the error message
   event.reply(GET_DB_NAMES_REPLY, dbNames);
@@ -190,12 +205,12 @@ ipcMain.on(GET_DB_NAMES, async event => {
  * when user clicks database, sends message to trigger creating a db
  * and replies with updated array of all db names after dletion
  */
-ipcMain.on(CREATE_DATABASE, async event => {
+ipcMain.on(CREATE_DATABASE, async (event: any) => {
   try {
     const input = await prompt({
       title: 'Create New Database',
       label: 'New Database Name:',
-      icon: iconPath
+      icon: iconPath,
     });
     if (input === null)
       event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
@@ -210,11 +225,11 @@ ipcMain.on(CREATE_DATABASE, async event => {
 });
 
 /**
- * called from ./components/db/AllDBs.js
+ * called from ./renderer/components/reuse/Footer.js
  * when user clicks database, sends message to trigger delete a db
  * and replies with updated array of all db names after dletion
  */
-ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
+ipcMain.on(DELETE_DATABASE, async (event: any, databaseName: string) => {
   const response = await deleteDatabase(databaseName);
   event.reply(DATABASE_ERROR, response);
 });
@@ -224,7 +239,7 @@ ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
  * when user clicks database, sends message to trigger getting the table data
  * call to get all the table names and replies with the tableNames
  */
-ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
+ipcMain.on(GET_TABLE_NAMES, async (event: any, dbname: string) => {
   LOGGEDIN_USER_CONFIG.database = dbname;
   const tableNames = await getAllTables(dbname);
   event.reply(GET_TABLE_NAMES_REPLY, tableNames);
@@ -239,7 +254,7 @@ ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
  * when user clicks specific table, we recieve call
  * get all the table data and replies with the table data
  */
-ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
+ipcMain.on(GET_TABLE_CONTENTS, async (event: any, args: Array<string>) => {
   // args === (table, selectedDb)
   const tableData = await getTableData(...args);
   event.reply(GET_TABLE_CONTENTS_REPLY, tableData);
@@ -250,12 +265,12 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
  * when the user submits request for a new table
  */
 // args === [selectedDb, newTableName]
-ipcMain.on(CREATE_TABLE, async (event, db) => {
+ipcMain.on(CREATE_TABLE, async (event: any, db: string) => {
   try {
     const input = await prompt({
       title: 'Create New Table',
       label: 'New Table Name:',
-      icon: iconPath
+      icon: iconPath,
     });
     if (input === null)
       event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
@@ -273,7 +288,7 @@ ipcMain.on(CREATE_TABLE, async (event, db) => {
  * when the user submits request for deleting table
  */
 // args === [selectedDb, selectedTableName]
-ipcMain.on(DELETE_TABLE, async (event, args) => {
+ipcMain.on(DELETE_TABLE, async (event, args: Array<string>) => {
   const response = await deleteTable(...args);
   event.reply(DATABASE_ERROR, response);
 });
@@ -284,7 +299,7 @@ ipcMain.on(DELETE_TABLE, async (event, args) => {
  * when the user submits the changes to the table
  */
 // args === [selectedTable,selectedDb,tableMatrix]
-ipcMain.on(UPDATE_TABLE_DATA, async (event, args) => {
+ipcMain.on(UPDATE_TABLE_DATA, async (event: any, args: Array<any>) => {
   const response = await updateTableData(...args);
   typeof response === 'string' && event.reply(DATABASE_ERROR, response);
 });
@@ -294,7 +309,7 @@ ipcMain.on(UPDATE_TABLE_DATA, async (event, args) => {
  * when the user submits request for deleting a row in the grid
  */
 // args === [selectedTable, selectedDb, selectedRowId]
-ipcMain.on(REMOVE_TABLE_ROW, async (_, args) => {
+ipcMain.on(REMOVE_TABLE_ROW, async (_: any, args: Array<any>) => {
   await removeTableRow(...args);
 });
 
@@ -306,7 +321,7 @@ ipcMain.on(REMOVE_TABLE_ROW, async (_, args) => {
  * meaning it's already serving up some specific DB's schema), and kills it so that
  * the server isn't stuck servicing a DB we are no longer inside of.
  */
-ipcMain.on(CLOSE_SERVER, async (event, args) => {
+ipcMain.on(CLOSE_SERVER, async (_: any) => {
   closeServer(expressServer, 'closeserver*****');
 });
 
@@ -314,19 +329,17 @@ ipcMain.on(CLOSE_SERVER, async (event, args) => {
  * args === [pathname (component that is requesting a refresh), any other args
  * necessary to make the backend requests for that component to successfully refresh]
  */
-ipcMain.on(REFRESH, async (event, args) => {
-  const pathname = args[0];
-  const refreshArgs = args[1];
+ipcMain.on(REFRESH, async (event, args: Array<any>) => {
+  const pathname: string = args[0];
+  const refreshArgs: string | Array<string> = args[1];
   if (pathname === '/allDBs') {
-    const dbNames = await getAllDbs();
+    const dbNames: Array<string> = await getAllDbs();
     event.reply(REFRESH_REPLY, dbNames);
   } else if (pathname === '/allTables') {
-    const tableNames = await getAllTables(refreshArgs);
+    const tableNames: string | Array<string> = await getAllTables(refreshArgs);
     event.reply(REFRESH_REPLY, tableNames);
   } else if (pathname === '/indivTable') {
-    const tableData = await getTableData(...refreshArgs);
+    const tableData: string | Array<any> = await getTableData(...refreshArgs);
     event.reply(REFRESH_REPLY, tableData);
-  } else {
-    return;
   }
 });
