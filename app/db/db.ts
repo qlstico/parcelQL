@@ -8,11 +8,11 @@ const DB_CONNECTION = {
   host: 'localhost', // Server hosting the postgres database
   port: 5432,
   idleTimeoutMillis: 300, // how long a client is allowed to remain idle before being closed
-  ssl: false
+  ssl: false,
 };
 
 // Helper Functions
-const setDatabase = dbName => {
+const setDatabase = (dbName: string): void => {
   DB_CONNECTION.database = dbName;
 };
 
@@ -56,7 +56,7 @@ const getAllDbs = async () => {
 // of having to reaload any queries after CRUD operations - if they succeed we just have the front end
 // proceed to add the values to the GUI itself.. But we let the front end if anything fails here so it
 // doesn't reflect inaccurate information.
-const createDatabase = async databaseName => {
+const createDatabase = async (databaseName: string) => {
   const pool = new pg.Pool(DB_CONNECTION);
   try {
     await pool.query(`CREATE DATABASE "${databaseName}"`);
@@ -67,7 +67,7 @@ const createDatabase = async databaseName => {
   }
 };
 
-const deleteDatabase = async databaseName => {
+const deleteDatabase = async (databaseName: string) => {
   setDatabase('');
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -79,7 +79,7 @@ const deleteDatabase = async databaseName => {
   }
 };
 
-const getAllTables = async database => {
+const getAllTables = async (database: string) => {
   setDatabase(database);
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -95,7 +95,7 @@ const getAllTables = async database => {
   }
 };
 
-const createTable = async (selectedDb, newTableName) => {
+const createTable = async (selectedDb: string, newTableName: string) => {
   setDatabase(selectedDb);
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -111,7 +111,7 @@ const createTable = async (selectedDb, newTableName) => {
   }
 };
 
-const deleteTable = async (selectedDb, selectedTableName) => {
+const deleteTable = async (selectedDb: string, selectedTableName: string) => {
   setDatabase(selectedDb);
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -123,7 +123,7 @@ const deleteTable = async (selectedDb, selectedTableName) => {
   }
 };
 
-const getTableData = async (table, database) => {
+const getTableData = async (table: string, database: string) => {
   setDatabase(database);
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -135,7 +135,11 @@ const getTableData = async (table, database) => {
   }
 };
 
-const removeTableRow = async (table, database, id) => {
+const removeTableRow = async (
+  table: string,
+  database: string,
+  id: string | number
+) => {
   setDatabase(database);
   const pool = new pg.Pool(DB_CONNECTION);
   try {
@@ -147,21 +151,29 @@ const removeTableRow = async (table, database, id) => {
   }
 };
 
-const tranformCellToSql = ({ key, value, id }) => {
+const tranformCellToSql = ({ key, value, id }): Array<any> => {
   return [`"${key}" = $${1}`, [value, id]];
 };
 
-const updateTableData = async (table, database, allUpdatedCells) => {
+const updateTableData = async (
+  table: string,
+  database: string,
+  allUpdatedCells: Array<any>
+) => {
   setDatabase(database);
   const pool = new pg.Pool(DB_CONNECTION);
   const keysAndParamsNestedArr = allUpdatedCells.reduce((accum, cell) => {
     // get key from cell and create object with key of id and value of field(ie key)=value
     return accum.concat([tranformCellToSql(cell)]);
   }, []);
-  const queryArr = keysAndParamsNestedArr.map(([updateStr, values]) => [
-    `UPDATE "${table}" SET ${updateStr} WHERE id=$${values.length} returning *`,
-    values
-  ]);
+  const queryArr = keysAndParamsNestedArr.map(
+    ([updateStr, values]: Array<any>) => [
+      `UPDATE "${table}" SET ${updateStr} WHERE id=$${
+        values.length
+      } returning *`,
+      values,
+    ]
+  );
   try {
     for (const [queryStr, params] of queryArr) {
       await pool.query(queryStr, params);
@@ -182,5 +194,5 @@ module.exports = {
   removeTableRow,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase
+  deleteDatabase,
 };
