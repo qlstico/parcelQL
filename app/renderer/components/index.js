@@ -11,14 +11,17 @@ export { default as DataTypes } from './db/DataTypes';
 // // Reuse folder files
 export { default as Header } from './reuse/Header';
 export { default as DisplayCard } from './reuse/DisplayCard';
-export { DbRelatedContext, DbRelatedProvider } from './reuse/DbRelatedContext';
+export {
+  DbRelatedContext,
+  DbRelatedProvider,
+} from './reuse/DbRelatedContext.tsx';
 export { default as PrimarySearchAppBar } from './reuse/Header';
 export { default as GraphQLDisplayCard } from './reuse/GraphiqlCard';
 export { default as VoyagerDisplayCard } from './reuse/VoyagerCard';
 export {
   notifyAdded,
   notifyRemoved,
-  notifyError
+  notifyError,
 } from './reuse/ToastNotifications';
 export { default as RefreshCircle } from './reuse/Refreshing';
 export { default as Footer } from './reuse/Footer';
