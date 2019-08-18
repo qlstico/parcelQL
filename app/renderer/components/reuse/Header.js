@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,41 +16,40 @@ const { ipcRenderer } = electron;
 
 const useStyles = makeStyles(theme => ({
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   title: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
-      display: 'block'
-    }
+      display: 'block',
+    },
   },
   inputRoot: {
-    color: '#753689'
+    color: '#753689',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: 200
-    }
+      width: 200,
+    },
   },
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
-      display: 'flex'
-    }
-  }
+      display: 'flex',
+    },
+  },
 }));
 
 function PrimarySearchAppBar(props) {
   const classes = useStyles();
 
   const {
-    currentComponent,
     setAllDbNames,
     setTables,
     setSelectedTableData,
@@ -58,15 +57,15 @@ function PrimarySearchAppBar(props) {
     selectedTable,
     currentUser,
     refreshStatus,
-    setRefreshStatus
+    setRefreshStatus,
   } = useContext(DbRelatedContext);
 
   // Error State
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage] = useState(null);
 
   const refreshPage = async () => {
     const {
-      location: { pathname }
+      location: { pathname },
     } = props;
 
     if (pathname === '/allDBs') {
@@ -102,8 +101,6 @@ function PrimarySearchAppBar(props) {
           setSelectedTableData(refreshedData);
         }
       });
-    } else {
-      return;
     }
   };
 
