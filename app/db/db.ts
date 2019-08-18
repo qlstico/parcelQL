@@ -71,6 +71,15 @@ const deleteDatabase = async (databaseName: string) => {
   setDatabase('');
   const pool = new pg.Pool(DB_CONNECTION);
   try {
+    await pool.query(
+      `REVOKE CONNECT ON DATABASE "${databaseName}" FROM public`
+    );
+    // weird logic where double quotes are columns and singles are for tables
+    // works so would not change
+    await pool.query(
+      `SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '${databaseName}'`
+    );
+    console.log('below pg_stat');
     await pool.query(`DROP DATABASE "${databaseName}"`);
     return null;
   } catch (error) {
