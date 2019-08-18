@@ -4,8 +4,6 @@ const { BrowserWindow, app, ipcMain, Menu, MenuItem } = require('electron');
 import prompt from 'electron-prompt';
 const isDev = require('electron-is-dev');
 const { resolve } = require('app-root-path');
-const path = require('path');
-const url = require('url');
 const os = require('os');
 const {
   getAllDbs,
@@ -17,7 +15,7 @@ const {
   deleteTable,
   createDatabase,
   setUserProvidedDbConnection,
-  deleteDatabase
+  deleteDatabase,
 } = require('../db/db');
 const express = require('express');
 const { postgraphile } = require('postgraphile');
@@ -47,7 +45,7 @@ const {
   DELETE_DATABASE_REPLY,
   DATABASE_ERROR,
   REFRESH,
-  REFRESH_REPLY
+  REFRESH_REPLY,
 } = require('../renderer/constants/ipcNames');
 const enableDestroy = require('server-destroy');
 const iconPath = 'app/assets/images/PURPLE_QLSticoV3.png';
@@ -63,7 +61,7 @@ let LOGGEDIN_USER_CONFIG = {
   password: '',
   host: 'localhost',
   port: 5432,
-  ssl: false
+  ssl: false,
 };
 
 // !!!!!>>>>>>>>>>>>>>>>>>> EXPRESS SERVER  <<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!!!
@@ -86,7 +84,7 @@ function setupExpress() {
     graphiql: true,
     enhanceGraphiql: true,
     handleErrors: true,
-    retryOnInitFail: false
+    retryOnInitFail: false,
   };
   // setup middleware for creating our graphql api
   expressApp.use(postgraphile(pgConnection, schemaName, pglConfig));
@@ -111,8 +109,8 @@ app.on('ready', async () => {
     height: 768,
     show: false,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   mainWindow.once('ready-to-show', () => {
@@ -135,7 +133,7 @@ app.on('ready', async () => {
   const prodPath = format({
     pathname: resolve('app/renderer/.parcel/production/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   });
   const url = isDev ? devPath : prodPath;
 
@@ -195,7 +193,7 @@ ipcMain.on(CREATE_DATABASE, async event => {
     const input = await prompt({
       title: 'Create New Database',
       label: 'New Database Name:',
-      icon: iconPath
+      icon: iconPath,
     });
     if (input === null)
       event.reply(CREATE_DATABASE_REPLY, 'Canceled database creation.');
@@ -210,11 +208,11 @@ ipcMain.on(CREATE_DATABASE, async event => {
 });
 
 /**
- * called from ./components/db/AllDBs.js
+ * called from ./renderer/components/reuse/Footer.js
  * when user clicks database, sends message to trigger delete a db
  * and replies with updated array of all db names after dletion
  */
-ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
+ipcMain.on(DELETE_DATABASE, async (event, databaseName: string) => {
   const response = await deleteDatabase(databaseName);
   event.reply(DATABASE_ERROR, response);
 });
@@ -224,7 +222,7 @@ ipcMain.on(DELETE_DATABASE, async (event, databaseName) => {
  * when user clicks database, sends message to trigger getting the table data
  * call to get all the table names and replies with the tableNames
  */
-ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
+ipcMain.on(GET_TABLE_NAMES, async (event, dbname: string) => {
   LOGGEDIN_USER_CONFIG.database = dbname;
   const tableNames = await getAllTables(dbname);
   event.reply(GET_TABLE_NAMES_REPLY, tableNames);
@@ -239,7 +237,7 @@ ipcMain.on(GET_TABLE_NAMES, async (event, dbname) => {
  * when user clicks specific table, we recieve call
  * get all the table data and replies with the table data
  */
-ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
+ipcMain.on(GET_TABLE_CONTENTS, async (event, args: Array<string>) => {
   // args === (table, selectedDb)
   const tableData = await getTableData(...args);
   event.reply(GET_TABLE_CONTENTS_REPLY, tableData);
@@ -250,12 +248,12 @@ ipcMain.on(GET_TABLE_CONTENTS, async (event, args) => {
  * when the user submits request for a new table
  */
 // args === [selectedDb, newTableName]
-ipcMain.on(CREATE_TABLE, async (event, db) => {
+ipcMain.on(CREATE_TABLE, async (event, db: string) => {
   try {
     const input = await prompt({
       title: 'Create New Table',
       label: 'New Table Name:',
-      icon: iconPath
+      icon: iconPath,
     });
     if (input === null)
       event.reply(CREATE_TABLE_REPLY, 'Canceled table creation.');
