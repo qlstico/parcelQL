@@ -3,7 +3,7 @@ import {
   DisplayCard,
   DbRelatedContext,
   notifyError,
-  RefreshCircle
+  RefreshCircle,
 } from '../index';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,20 +14,20 @@ import { withRouter } from 'react-router-dom';
 const {
   GET_TABLE_NAMES,
   GET_TABLE_NAMES_REPLY,
-  CLOSE_SERVER
+  CLOSE_SERVER,
 } = require('../../constants/ipcNames');
 
 // For styling MaterialUI components
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   control: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   highlightSelected: {
-    background: 'grey'
-  }
+    background: 'grey',
+  },
 }));
 
 const AllDBs = props => {
@@ -43,7 +43,7 @@ const AllDBs = props => {
     setServerStatus,
     allDbNames,
     currentlyHighlightedDb,
-    setCurrentlyHighlightedDb
+    setCurrentlyHighlightedDb,
   } = useContext(DbRelatedContext);
 
   // Allows a pseudo loading screen for a predetermined amount of time to allow
@@ -52,7 +52,7 @@ const AllDBs = props => {
   const [loadTimedOut, setLoadTimedOut] = useState(false);
 
   // Error State
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage] = useState(null);
 
   // Hooks for setting/retrieving neccesary info to/from config file and context provider
   useEffect(() => {

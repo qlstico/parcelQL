@@ -4,16 +4,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AnnouncementIcon from '@material-ui/icons/Announcement';
 import Toolbar from '@material-ui/core/Toolbar';
 import { electron } from '../../utils/electronImports';
 import {
   DbRelatedContext,
   notifyAdded,
   notifyRemoved,
-  notifyError
+  notifyError,
 } from '../index';
 const nativeImage = electron.remote.nativeImage;
 const { dialog } = electron.remote;
@@ -29,44 +27,43 @@ const {
   CREATE_TABLE,
   CREATE_TABLE_REPLY,
   DELETE_TABLE,
-  DATABASE_ERROR
+  DATABASE_ERROR,
 } = require('../../constants/ipcNames');
 
 const useStyles = makeStyles(theme => ({
   appBar: {
     top: 'auto',
     bottom: 0,
-    height: 60
+    height: 60,
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
-      display: 'flex'
-    }
+      display: 'flex',
+    },
   },
   extendedIcon: {
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 }));
 
 function Footer(props) {
   const classes = useStyles();
 
   // Error State
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage] = useState(null);
 
   const {
     setAllDbNames,
     setTables,
     selectedDb,
-    selectedTable,
     currentlyHighlightedDb,
     setCurrentlyHighlightedDb,
     currentlyHighlightedTable,
-    setCurrentlyHighlightedTable
+    setCurrentlyHighlightedTable,
   } = useContext(DbRelatedContext);
 
   // function for creating a new db using the footer buttons
@@ -93,7 +90,7 @@ function Footer(props) {
     message: `Are you sure you want to delete this database: "${currentlyHighlightedDb}" ?`,
     detail:
       'This is a permanent deletion option, all information contained will be lost.',
-    icon: dbIcon
+    icon: dbIcon,
   };
 
   // function for deleting db through footer buttons
@@ -138,7 +135,7 @@ function Footer(props) {
     message: `Are you sure you want to delete this table: "${currentlyHighlightedTable}" ?`,
     detail:
       'This is a permanent deletion option, all information contained will be lost.',
-    icon: tableIcon
+    icon: tableIcon,
   };
 
   // function for deleting the highlighted table from the footer button
@@ -146,7 +143,7 @@ function Footer(props) {
     if (currentlyHighlightedTable) {
       await ipcRenderer.send(DELETE_TABLE, [
         selectedDb,
-        currentlyHighlightedTable
+        currentlyHighlightedTable,
       ]);
       await ipcRenderer.once(DATABASE_ERROR, (_, errorMsg) => {
         if (typeof errorMsg === 'string' && errorMessage !== errorMsg) {
@@ -167,7 +164,7 @@ function Footer(props) {
   const add = () => {
     const {
       location: { pathname },
-      history
+      history,
     } = props;
     if (pathname === '/') {
       history.push('/createConnection');
@@ -182,7 +179,7 @@ function Footer(props) {
   // component we are currently on.
   const remove = () => {
     const {
-      location: { pathname }
+      location: { pathname },
     } = props;
     if (pathname === '/allDBs') {
       dialog.showMessageBox(null, confirmDeleteDb, response => {
