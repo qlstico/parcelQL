@@ -3253,10 +3253,10 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-crypto-js@^3.1.9-1:
-  version "3.1.9-1"
-  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
-  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
+crypto-js@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.0.0.tgz#2904ab2677a9d042856a2ea2ef80de92e4a36dcc"
+  integrity sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg==
 
 crypto-random-string@^1.0.0:
   version "1.0.0"
@@ -9223,12 +9223,12 @@ simple-assign@^0.1.0:
   resolved "https://registry.yarnpkg.com/simple-assign/-/simple-assign-0.1.0.tgz#17fd3066a5f3d7738f50321bb0f14ca281cc4baa"
   integrity sha1-F/0wZqXz13OPUDIbsPFMooHMS6o=
 
-simple-crypto-js@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/simple-crypto-js/-/simple-crypto-js-2.0.2.tgz#8075fe0ffa984f70027dd3e148a240f2603732c9"
-  integrity sha1-gHX+D/qYT3ACfdPhSKJA8mA3Msk=
+simple-crypto-js@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/simple-crypto-js/-/simple-crypto-js-2.3.0.tgz#b1d3b6059928a3eb2e928140e9839613b56cd645"
+  integrity sha512-vIac75fH0Teym/r3zNO4BMpdWaPKfqxrRBIliMHg92qiDcxsVKRcSdrN+i9BeCgyGff0oxKOHIi94UaDxbkIcg==
   dependencies:
-    crypto-js "^3.1.9-1"
+    crypto-js "^4.0.0"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
